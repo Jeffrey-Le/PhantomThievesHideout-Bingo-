@@ -11,12 +11,52 @@ async function getData() {
                 'Content-Type':'applications/json'
             }
         });*/
-        const res = await axios.get(url, {headers: {
+        const res = await axios.get(url,
+            {headers: {
             'Content-Type':'applications/json'
-        }});
+        }
+    });
 
-        const dataRes = res.data;
-        return dataRes
+        const dataResult = res.data;
+        return dataResult;
+    } catch (err) {
+        console.log(err);
+        return [];
+    }
+}
+
+async function getRandomSingleChallenge() {
+    try {
+        const url = "http://127.0.0.1:5000//get/challenge/random";
+        
+        const res = await axios.get(url, {
+            headers: {
+                'Content-Type': 'applications/json'
+            }
+        });
+
+        const dataResult = res.data;
+        return dataResult;
+
+    } catch (err) {
+        console.log(err);
+        return [];
+    }
+}
+
+async function getAllChallenges() {
+    try {
+        const url = "http://127.0.0.1:5000//get/challenge";
+        
+        const res = await axios.get(url, {
+            headers: {
+                'Content-Type': 'applications/json'
+            }
+        });
+
+        const dataResult = res.data;
+        return dataResult;
+
     } catch (err) {
         console.log(err);
         return [];
@@ -39,4 +79,22 @@ function CardData()
     }, [])
 }
 
-export default CardData;
+function GetRandomBingoCard()
+{
+    const [challenges, setChallenges] = useState([]);
+
+    useEffect(() => {
+        for (let i = 0; i < 25; i++)
+        {
+            getRandomSingleChallenge().then(data => {
+                setChallenges((challenges) => [...challenges, data]);
+            })
+        }
+    }, [])
+
+    challenges.map((item) => {
+        console.log(item);
+    })
+}
+
+export {CardData, GetRandomBingoCard};

@@ -2,8 +2,6 @@ import React, {useState} from 'react'
 import {Grid, Container} from '@mui/material';
 import {BoxStyle, CardGrid} from '../styles/cardStyles'
 
-import CardData from './cardData'
-
 
 // Make a Functional Component Here
 function CreateBoard() {
