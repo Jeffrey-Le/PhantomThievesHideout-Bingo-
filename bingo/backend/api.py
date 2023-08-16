@@ -5,9 +5,8 @@ from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 from sqlalchemy.orm import relationship, load_only, lazyload
 from sqlalchemy.sql import func, select, column
-import os
 
-#dotenv_path = Path('./.env')
+
 load_dotenv()
 
 app = Flask(__name__)
@@ -20,6 +19,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
+
 
 bingo_set_challenges = db.Table('bingo_set_challenges',
     db.Column('id', db.Integer, primary_key=True),
@@ -40,20 +40,10 @@ class Challenge(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     challenge = db.Column(db.String(255))
     category = db.Column(db.String(32))
-    #bingo_set_challenges = db.relationship('BingoSetChallenges', backref='challenge')
 
     def __init__(self, challenge, category):
         self.challenge = challenge
         self.category = category
-
-'''class BingoSetChallenge(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    position = db.Column(db.Integer)
-    card_id = db.Column(db.Integer, db.ForeignKey('bingocard.id'))
-    challenge_id = db.Column(db.Integer, db.ForeignKey('challenge.id'))
-
-    def __init__(self, position):
-        self.position = position'''
 
 class BingoSchema(ma.Schema):
     class Meta:
@@ -72,14 +62,14 @@ challenge_schema = ChallengeSchema() # One Item
 challenges_schema = ChallengeSchema(many=True) # All Items
 
 # Get All Bingo Cards Data
-@app.route('/get', methods = ['GET'])
+@app.route('/get/card', methods = ['GET'])
 def getAllData():
     allBingoCards = BingoCard.query.all()
     results = bingos_schema.dump(allBingoCards)
     return jsonify(results)
 
 # Get one bingo card data by id
-@app.route('/get/<id>', methods = ['GET'])
+@app.route('/get/card/<id>', methods = ['GET'])
 def card_details(id):
     card = BingoCard.query.get(id)
     return bingo_schema.jsonify(card)
@@ -96,23 +86,28 @@ def getAllChallenges():
 def getChallengeByCategory(challengeCategory):
     print('Challenge Category: ', challengeCategory)
     allChallenges = Challenge.query.filter(Challenge.category == challengeCategory).all()
-    print(allChallenges)
+    
     results = challenges_schema.dump(allChallenges)
     return jsonify(results)
 
 @app.route('/get/challenge/random', methods = ['GET'])
 def getRandomChallenge():
-    challengeRes = Challenge.query.order_by(func.random()).first()
-
-    '''testRes = Challenge.query.options(load_only(Challenge.id)).offset(
-        (func.floor(
-        func.random() * db.session.query(func.count(Challenge.id))
-        ))
-    ).limit(1).all()
+    challengeResult = Challenge.query.order_by(func.random()).first()
     
-    print(testRes)'''
+    '''
+    query = db.session.query(BingoCard)
+    rowCount = int(query.count())
+    challengeResult = query.offset(int(rowCount*random.random())).first()
+    '''
+    result = challenge_schema.dump(challengeResult)
 
-    result = challenge_schema.dump(challengeRes)
+    return jsonify(result)
+
+@app.route('/get/challenge/random/<amount>', methods = ['GET'])
+def getRandomChallenges(amount):
+    challengeResults = Challenge.query.order_by(func.random()).limit(amount)
+
+    result = challenges_schema.dump(challengeResults)
 
     return jsonify(result)
 
@@ -149,7 +144,7 @@ def addChallenge():
 
     return challenge_schema.jsonify(challenges)
 
-@app.route('/update/<id>', methods = ['PUT'])
+@app.route('/update/card/<id>', methods = ['PUT'])
 def updateCard(id):
     card = BingoCard.query.get(id)
 
@@ -164,7 +159,7 @@ def updateCard(id):
 def updateChallenge(id):
     cardID = request.json['bingocard_id']
 
-    upd = bingo_set_challenges.update().where(challenge_id=id).values(bingocard_id=cardID)
+    upd = bingo_set_challenges.update().where(bingo_set_challenges.c.challenge_id==id).values(bingocard_id=cardID)
 
     db.session.execute(upd)
     db.session.commit()

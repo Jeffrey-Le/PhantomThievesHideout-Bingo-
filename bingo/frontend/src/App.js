@@ -27,7 +27,6 @@ function App() {
       <TeamDetails/>
       <Card/>
       <CardData/>
-      <GetRandomBingoCard/>
     </div>
     </>
   );
