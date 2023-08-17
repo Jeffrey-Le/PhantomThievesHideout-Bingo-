@@ -71,7 +71,7 @@ function CardData()
     useEffect(() => {
         getData().then(data => {
             setBingoCards(data);
-        })
+        }, [])
 
         bingoCards.map((item) => {
             console.log(`Result Item ${item.id}: ${item.seed} (SEED)`);
