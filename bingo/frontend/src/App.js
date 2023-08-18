@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Card from './components/card';
 import LobbyDeatils from './components/lobbyDetails';
 import TeamDetails from './components/teamDetails';
-import {CardData, GetRandomBingoCard} from './components/cardData'
+import {CardData} from './components/cardData'
 import './App.css';
 
 function Hi(props) {

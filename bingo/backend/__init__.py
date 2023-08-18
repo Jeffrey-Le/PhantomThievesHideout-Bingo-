@@ -4,15 +4,20 @@ import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+from flask_cors import CORS
 
 from .extensions import db
-from .routes import main
+
+from .bingoSetChallenge.routes import bingoSetChallenges
+from .bingoCard.routes import bingoCard
+from.challenge.routes import challenge
 
 def create_app():
 
     load_dotenv()
 
     app = Flask(__name__)
+    CORS(app)
 
     SQLpass = os.getenv("SQLPASSWORD")
 
@@ -21,6 +26,8 @@ def create_app():
 
     db.init_app(app)
 
-    app.register_blueprint(main)
+    app.register_blueprint(bingoSetChallenges)
+    app.register_blueprint(bingoCard)
+    app.register_blueprint(challenge)
 
     return app
