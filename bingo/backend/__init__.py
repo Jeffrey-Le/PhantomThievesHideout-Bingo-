@@ -1,4 +1,4 @@
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 import os
 
 from flask import Flask
@@ -14,12 +14,12 @@ from.challenge.routes import challenge
 
 def create_app():
 
-    load_dotenv()
+    load_dotenv(find_dotenv())
 
     app = Flask(__name__)
     CORS(app)
 
-    SQLpass = os.getenv("SQLPASSWORD")
+    SQLpass = os.environ.get("SQLPASSWORD")
 
     app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql://root:{SQLpass}@localhost/manhuntbingodb"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

@@ -3,7 +3,7 @@ import axios from 'axios';
 
 async function getAllBingoCards() {
     try {
-        const url = "http://127.0.0.1:5000/get/card";
+        const url = "http://127.0.0.1:5000/card";
         /*const res = await axios.request({
             url: url,
             method: 'GET',

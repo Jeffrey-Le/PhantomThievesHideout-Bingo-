@@ -3,7 +3,7 @@ import axios from 'axios';
 
 async function getRandomSingleChallenge() {
     try {
-        const url = "http://127.0.0.1:5000//get/challenge/random";
+        const url = "http://127.0.0.1:5000//challenge/random";
         
         const response = await axios.get(url, {
             headers: {
@@ -19,7 +19,7 @@ async function getRandomSingleChallenge() {
     }
 }
 
-const useRandomSingleChallenge = async () => {
+const useRandomSingleChallenge = () => {
     const [challenge, setChallenge] = useState([]);
 
     useEffect(() => {

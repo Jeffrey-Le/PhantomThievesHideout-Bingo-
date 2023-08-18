@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import {useEffect, useState} from 'react';
+import axios from 'axios';
 
-async function getAllChallenges() {
+async function getNumChallenges(amount) {
     try {
-        const url = "http://127.0.0.1:5000//challenge";
+        const url = `http://127.0.0.1:5000//challenge/random/${amount}`;
         
         const response = await axios.get(url, {
             headers: {
@@ -19,16 +19,16 @@ async function getAllChallenges() {
     }
 }
 
-const useAllChallenges = () => {
+const useNumChallenges = (amount) => {
     const [challenges, setChallenges] = useState([]);
 
     useEffect(() => {
-       getAllChallenges().then((data) => {
-        setChallenges([data]);
-       })
-    }, []);
+        getNumChallenges(amount).then((data) => {
+            setChallenges([data]);
+        })
+    }, [])
 
     return challenges;
 }
 
-export default useAllChallenges;
+export default useNumChallenges;

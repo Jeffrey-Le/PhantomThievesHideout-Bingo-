@@ -35,22 +35,22 @@ def addCard():
 
     return bingo_schema.jsonify(bingos)
 
-@bingoCard.route('/card/<id>', methods = ['GET', 'PUT', 'DELETE'])
+@bingoCard.route('/card/id=<id>', methods = ['GET', 'PUT', 'DELETE'])
 def checkMethod2(id):
     if request.method == 'GET':
-        return getCard(id)
+        return getCardByID(id)
     elif request.method == 'PUT':
-        return updateCard(id)
+        return updateCardByID(id)
     else:
-        return deleteCard(id)
+        return deleteCardByID(id)
 
-def getCard(id):
-    card = BingoCard.query.get(id)
+def getCardByID(props):
+    card = BingoCard.query.get(props)
 
     return bingo_schema.jsonify(card)
 
-def updateCard(id):
-    card = BingoCard.query.get(id)
+def updateCardByID(props):
+    card = BingoCard.query.get(props)
 
     seed = request.json['seed']
 
@@ -59,8 +59,42 @@ def updateCard(id):
     db.session.commit()
     return bingo_schema.jsonify(card)
 
-def deleteCard(id):
-    card = BingoCard.query.get(id)
+def deleteCardByID(props):
+    card = BingoCard.query.get(props)
+
+    db.session.delete(card)
+    db.session.commit()
+
+    return bingo_schema.jsonify(card)
+
+# CARD BY SEED
+
+@bingoCard.route('/card/seed=<seed>', methods = ['GET', 'PUT', 'DELETE'])
+def checkMethod3(seed):
+    if request.method == 'GET':
+        return getCardBySeed(seed)
+    elif request.method == 'PUT':
+        return updateCardBySeed(seed)
+    else:
+        return deleteCardBySeed(seed)
+
+def getCardBySeed(props):
+    card = BingoCard.query.filter(BingoCard.seed == props).first()
+
+    return bingo_schema.jsonify(card)
+
+def updateCardBySeed(props):
+    card = BingoCard.query.filter(BingoCard.seed == props).first()
+
+    seedJson = request.json['seed']
+
+    card.seed = seedJson
+
+    db.session.commit()
+    return bingo_schema.jsonify(card)
+
+def deleteCardBySeed(props):
+    card = BingoCard.query.filter(BingoCard.seed == props).first()
 
     db.session.delete(card)
     db.session.commit()

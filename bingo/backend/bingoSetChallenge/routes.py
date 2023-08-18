@@ -8,7 +8,7 @@ from ..models.bingoSetChallenges import bingo_set_challenges
 
 bingoSetChallenges = Blueprint('bingo_set_challenges', __name__)
 
-@bingoSetChallenges.route('/challenge/<id>', methods = ['PUT'])
+@bingoSetChallenges.route('/challenge/set/<id>', methods = ['PUT'])
 def updateChallenge(id):
     cardID = request.json['bingocard_id']
 

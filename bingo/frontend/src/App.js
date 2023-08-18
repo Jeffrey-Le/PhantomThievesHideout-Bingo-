@@ -3,6 +3,9 @@ import Card from './components/card';
 import LobbyDeatils from './components/lobbyDetails';
 import TeamDetails from './components/teamDetails';
 import {CardData} from './components/cardData'
+import Challenge from './components/challenge';
+import StartButton from './components/startButton';
+import GenerateNewBingoCard from './components/generateNewCard';
 import './App.css';
 
 function Hi(props) {
@@ -25,8 +28,9 @@ function App() {
     <div className="App">
       <LobbyDeatils/>
       <TeamDetails/>
+      <StartButton/>
       <Card/>
-      <CardData/>
+      <GenerateNewBingoCard seed={11000}/>
     </div>
     </>
   );
