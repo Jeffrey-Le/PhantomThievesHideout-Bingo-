@@ -1,27 +1,36 @@
 import { useState } from "react";
-import useSingleBingoCard from "../hooks/useSingleBingoCard";
-import useNumChallenges from "../hooks/useNumChallenges";
-import setBingoSet from "../hooks/setBingoSet";
-import setBingoCard from "../hooks/setBingoCard";
 
+import useFetch from "../hooks/useFetch";
+
+import { allChallenges, bingoCards, bingoSetChallenges } from "../service/links";
 
 
 function GenerateNewBingoCard(props) {
     const bingoPost = {
-        seed: 11000
+        "seed": 2400
     }
 
     //setBingoCard(bingoPost);
+
+    const [challenges] = useFetch(allChallenges);
+
+    //const [postBingoCard] = useFetch(bingoCards, 'post', bingoPost);
+    
+    console.log(challenges);
 
     //const [challenges] = useNumChallenges([25]);
 
     //const [bingoCard] = useSingleBingoCard({seed: props.seed});
 
-    const updatedID = {
-        bingocard_id: 1
-    };
+    //const updatedID = {
+       // bingocard_id: 1
+    //};
 
-    setBingoSet(3, updatedID);
+    //console.log(JSON.stringify(updatedID));
+
+    //const [bingoSet] = useFetch(bingoSetChallenges(4), 'put', updatedID);
+
+    //console.log(bingoSet);
 }
 
 export default GenerateNewBingoCard;

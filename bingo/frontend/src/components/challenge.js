@@ -1,11 +1,14 @@
 import {useState} from 'react'
 import axios from 'axios'
-import useNumChallenges from '../hooks/useNumChallenges'
+
+import useFetch from '../hooks/useFetch';
+
+import { numChallenges } from '../service/links';
 
 function Challenge() {
-    const [challenges] = useNumChallenges([25]);
+    //const [challenges] = useFetch(numChallenges('id', 3));
 
-    console.log(challenges);
+    //console.log(challenges);
 }
 
 export default Challenge;

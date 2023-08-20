@@ -1,12 +1,11 @@
 import {useState, useEffect} from 'react';
 import axios from 'axios';
-
-import useBingoCards from '../hooks/useBingoCards';
+import useFetch from '../hooks/useFetch';
 
 function CardData()
 {
-    const [bingoCards] = useBingoCards([]);
-    console.log(bingoCards);
+    //const [bingoCards] = useFetch(bingoCards);
+    //console.log(bingoCards);
 }
 
 /*
