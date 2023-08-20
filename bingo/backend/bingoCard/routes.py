@@ -44,13 +44,13 @@ def checkMethod2(id):
     else:
         return deleteCardByID(id)
 
-def getCardByID(props):
-    card = BingoCard.query.get(props)
+def getCardByID(id):
+    card = BingoCard.query.get(id)
 
     return bingo_schema.jsonify(card)
 
-def updateCardByID(props):
-    card = BingoCard.query.get(props)
+def updateCardByID(id):
+    card = BingoCard.query.get(id)
 
     seed = request.json['seed']
 
@@ -59,8 +59,8 @@ def updateCardByID(props):
     db.session.commit()
     return bingo_schema.jsonify(card)
 
-def deleteCardByID(props):
-    card = BingoCard.query.get(props)
+def deleteCardByID(id):
+    card = BingoCard.query.get(id)
 
     db.session.delete(card)
     db.session.commit()
@@ -78,13 +78,13 @@ def checkMethod3(seed):
     else:
         return deleteCardBySeed(seed)
 
-def getCardBySeed(props):
-    card = BingoCard.query.filter(BingoCard.seed == props).first()
+def getCardBySeed(seed):
+    card = BingoCard.query.filter(BingoCard.seed == seed).first()
 
     return bingo_schema.jsonify(card)
 
-def updateCardBySeed(props):
-    card = BingoCard.query.filter(BingoCard.seed == props).first()
+def updateCardBySeed(seed):
+    card = BingoCard.query.filter(BingoCard.seed == seed).first()
 
     seedJson = request.json['seed']
 
@@ -93,8 +93,8 @@ def updateCardBySeed(props):
     db.session.commit()
     return bingo_schema.jsonify(card)
 
-def deleteCardBySeed(props):
-    card = BingoCard.query.filter(BingoCard.seed == props).first()
+def deleteCardBySeed(seed):
+    card = BingoCard.query.filter(BingoCard.seed == seed).first()
 
     db.session.delete(card)
     db.session.commit()

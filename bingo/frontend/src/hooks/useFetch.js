@@ -1,21 +1,23 @@
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 
-async function fetchData(url) {
+async function fetchData(url, method) {
     try {
         //const url = url;
-        /*const res = await axios.request({
+        const response = await axios.request({
             url: url,
-            method: 'GET',
+            method: method,
             headers: {
                 'Content-Type':'applications/json'
             }
-        });*/
+        });
+        /*
         const response = await axios.get(url,
             {headers: {
             'Content-Type':'applications/json'
         }
-    });
+        
+    });*/
 
         return response.data;
     } catch (err) {
@@ -51,7 +53,7 @@ const useFetch = (url, method='GET', newData=null) => {
         
         if (method === 'GET')
         {
-            fetchData(url).then((result) => {
+            fetchData(url, method).then((result) => {
                 setData([result]);
             });
         }
@@ -64,6 +66,12 @@ const useFetch = (url, method='GET', newData=null) => {
         else if (method === 'PUT')
         {
             manageData(url, method, newData).then((result) => {
+                setData([result]);
+            });
+        }
+        else if (method === 'DELETE')
+        {
+            fetchData(url, method).then((result) => {
                 setData([result]);
             });
         }
