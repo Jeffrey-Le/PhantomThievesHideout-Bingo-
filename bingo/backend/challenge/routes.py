@@ -73,7 +73,6 @@ def deleteChallenge(id):
 
 @challenge.route('/challenge/<challengeCategory>', methods = ['GET'])
 def getChallengeByCategory(challengeCategory):
-    print('Challenge Category: ', challengeCategory)
     allChallenges = Challenge.query.filter(Challenge.category == challengeCategory).all()
     
     results = challenges_schema.dump(allChallenges)
@@ -95,6 +94,14 @@ def getRandomChallenge():
 @challenge.route('/challenge/random/<amount>', methods = ['GET'])
 def getRandomChallenges(amount):
     challengeResults = Challenge.query.order_by(func.random()).limit(amount)
+
+    result = challenges_schema.dump(challengeResults)
+
+    return jsonify(result)
+
+@challenge.route('/challenge/random/<amount>/<challengeCategory>', methods = ['GET'])
+def getRandomChallengesByCategory(amount, challengeCategory):
+    challengeResults = Challenge.query.filter(Challenge.category == challengeCategory).order_by(func.random()).limit(amount)
 
     result = challenges_schema.dump(challengeResults)
 

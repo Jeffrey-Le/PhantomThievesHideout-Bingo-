@@ -1,10 +1,13 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState, useRef} from 'react'
 import {Grid, Container} from '@mui/material';
 import {BoxStyle, CardGrid} from '../styles/cardStyles'
 
+function loadData() {
+
+}
 
 // Make a Functional Component Here
-function CreateBoard() {
+function CreateBoard(props) {
     var boxArray = [];
 
     for (var i  = 0; i < 25; i++)
@@ -13,6 +16,19 @@ function CreateBoard() {
     }
 
     const [boxes, setBoxes] = useState(boxArray);
+
+    // REFS
+    const effectRan = useRef(false);
+
+    useEffect(() => {
+
+        if (effectRan.useEffect === true)
+            console.log(props.challengesData[0])
+
+        return () => {
+            effectRan.useEffect = true
+        }
+    }, [props]);
 
     const handleClick = (id) => {
         const tempList = [...boxes];
@@ -28,7 +44,7 @@ function CreateBoard() {
                     return (
                     <CardGrid xs={2.2} key={item.id}>
                         <BoxStyle onClick={() => {handleClick(item.id)}}>
-                        {boxes[item.id].value ? <div>Complete</div> : <div>Your Mom</div>}
+                        {boxes[item.id].value ? <div>Complete</div> : <div>{props.challengesData[item.id].challenge}</div>}
                         </BoxStyle>
                     </CardGrid>)
                 })}

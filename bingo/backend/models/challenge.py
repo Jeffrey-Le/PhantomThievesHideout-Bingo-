@@ -1,5 +1,7 @@
 from ..extensions import db, ma
 
+import json
+
 class Challenge(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     challenge = db.Column(db.String(255))

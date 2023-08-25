@@ -2,11 +2,10 @@ import { useState } from 'react'
 import Card from './components/card';
 import LobbyDeatils from './components/lobbyDetails';
 import TeamDetails from './components/teamDetails';
-import {CardData} from './components/cardData'
-import Challenge from './components/challenge';
 import StartButton from './components/startButton';
 import GenerateNewBingoCard from './components/generateNewCard';
 import './App.css';
+import LoadExistingCard from './components/loadExistingCard';
 
 function Hi(props) {
   const {num} = props;
@@ -14,6 +13,7 @@ function Hi(props) {
     <div>Hello Mom {num}</div>
   )
 }
+
 
 function App() {
 
@@ -29,8 +29,7 @@ function App() {
       <LobbyDeatils/>
       <TeamDetails/>
       <StartButton/>
-      <Card/>
-      <GenerateNewBingoCard seed={11000}/>
+      <LoadExistingCard/>
     </div>
     </>
   );

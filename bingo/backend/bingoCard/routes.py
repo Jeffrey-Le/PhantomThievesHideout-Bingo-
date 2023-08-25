@@ -1,5 +1,7 @@
 from flask import Blueprint, jsonify, request
 
+from sqlalchemy.sql import func
+
 from ..models.bingoCard import BingoCard, BingoSchema, bingo_schema, bingos_schema
 from ..models.bingoSetChallenges import bingo_set_challenges
 
@@ -29,9 +31,11 @@ def addCard():
     db.session.add(bingos)
     db.session.commit()
 
+    '''
     insr = bingo_set_challenges.insert().values(bingocard_id=bingos.id)
     db.session.execute(insr)
     db.session.commit()
+    '''
 
     return bingo_schema.jsonify(bingos)
 
@@ -100,3 +104,11 @@ def deleteCardBySeed(seed):
     db.session.commit()
 
     return bingo_schema.jsonify(card)
+
+@bingoCard.route('/card/random/<amount>', methods = ['GET'])
+def getRandomCard(amount):
+    cardResults = BingoCard.query.order_by(func.random()).limit(amount)
+
+    result = bingos_schema.dump(cardResults)
+
+    return jsonify(result)

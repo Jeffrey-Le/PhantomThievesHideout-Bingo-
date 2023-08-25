@@ -1,36 +1,115 @@
-import { useState } from "react";
+import { useCallback, useMemo, useEffect, useState, useRef } from "react";
+import axios from "axios";
 
 import useFetch from "../hooks/useFetch";
 
-import { allChallenges, bingoCards, bingoSetChallenges } from "../service/links";
+import { allChallenges, bingoCards, bingoSetChallenges, numCategoryChallenges, numChallenges } from "../service/links";
+import CreateBoard from "./card";
 
+function randomNewSeed() {
+    const min = 1001;
+    const max = 9999;
+    const seed = Math.floor(Math.random() * (max - min) + min);
 
-function GenerateNewBingoCard(props) {
-    const bingoPost = {
-        "seed": 2400
+    return seed;
+}
+
+function GenerateNewBingoCard() {
+    const amount = 25;
+    const categories = ['crafting', 'collectables', 'advancement', 'chase'];
+
+    const [cards, setCards, updateCards] = useFetch(bingoCards);
+    const [challenges, setChallenges, updateChallenges, appendChallenges] = useFetch(numChallenges(amount));
+    const [isDone, setIsDone] = useState(false);
+
+    // Refs
+    const isCardSet = useRef(false);
+    const isChallengesSet = useRef(false);
+    const isBingoSetUpdated = useRef(false);
+
+    let newSeed = randomNewSeed();
+
+    const cardPost = {
+        "seed": newSeed
     }
 
-    //setBingoCard(bingoPost);
+    useEffect(() => {
+        if (isCardSet.current === true)
+            setCards(cardPost);
 
-    const [challenges] = useFetch(allChallenges);
+        return () => {
+            isCardSet.current = true;
+        }
+    }, []);
 
-    //const [postBingoCard] = useFetch(bingoCards, 'post', bingoPost);
+    /*
+    useEffect(() => {
+
+        if (isChallengesSet.current === true)
+        {
+            const append = () => {
+                categories.forEach((category) => {
+                    const url = numCategoryChallenges(amount, category);
+                    appendChallenges(url, {method: 'GET'});
+                });
+            }
+
+            append()
+        }
+
+        return () => {
+            isChallengesSet.current = true;
+        }
+    }, [loadChallenges]);
+    */
+
+    useEffect(() => {
+        const doUpdate = () => {
+            if (cards && challenges)
+            {
+                const cardID = cards.data.id;
+                const data = challenges.data;
+                
+                for (let i = 0; i < 25; i++)
+                {
+                    const updatedData = {
+                        "bingocard_id": cardID,
+                        "position": (i + 1)
+                    }
     
-    console.log(challenges);
+                    if (data[i] && cardID != undefined)
+                    {
+                        // ERROR
+                        updateChallenges(updatedData, bingoSetChallenges(data[i].id));  
+                    }
+                    else
+                    {
+                        console.log('CARDID DOESNT EXIST')
+                    }
+                
+                }
+            }
+        }
 
-    //const [challenges] = useNumChallenges([25]);
+        if (isBingoSetUpdated.current === true)
+        {
+            doUpdate()
+        }
 
-    //const [bingoCard] = useSingleBingoCard({seed: props.seed});
+        return () => {
+            isBingoSetUpdated.current = true;
+        }
 
-    //const updatedID = {
-       // bingocard_id: 1
-    //};
+        
+    }, [challenges.loading]);
 
-    //console.log(JSON.stringify(updatedID));
+    return (
+        <>
+            <div>Hello There</div>
+            <CreateBoard challengesData={challenges.data}/>
+        </>
+    )
 
-    //const [bingoSet] = useFetch(bingoSetChallenges(4), 'put', updatedID);
-
-    //console.log(bingoSet);
 }
 
 export default GenerateNewBingoCard;

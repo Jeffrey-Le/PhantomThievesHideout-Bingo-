@@ -14,7 +14,7 @@ from.challenge.routes import challenge
 
 def create_app():
 
-    load_dotenv(find_dotenv())
+    load_dotenv('.env')
 
     app = Flask(__name__)
     CORS(app)
