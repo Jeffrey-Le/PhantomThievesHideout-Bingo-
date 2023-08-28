@@ -1,7 +1,7 @@
 blinker==1.6.2
-click==8.1.6
+click==8.1.7
 colorama==0.4.6
-Flask==2.3.2
+Flask==2.3.3
 flask-marshmallow==0.15.0
 Flask-SQLAlchemy==3.0.5
 greenlet==2.0.2
@@ -13,6 +13,6 @@ marshmallow-sqlalchemy==0.29.0
 mysqlclient==2.2.0
 packaging==23.1
 python-dotenv==1.0.0
-SQLAlchemy==2.0.19
+SQLAlchemy==2.0.20
 typing_extensions==4.7.1
 Werkzeug==2.3.7
