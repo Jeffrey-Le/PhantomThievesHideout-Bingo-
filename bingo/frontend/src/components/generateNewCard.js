@@ -105,8 +105,7 @@ function GenerateNewBingoCard() {
 
     return (
         <>
-            <div>Hello There</div>
-            <CreateBoard challengesData={challenges.data}/>
+            {challenges.loading ? <div> Loading Challenges </div> : <CreateBoard challengesData={challenges.data}/>}
         </>
     )
 

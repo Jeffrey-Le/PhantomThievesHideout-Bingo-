@@ -27,4 +27,4 @@ export const randomSingleChallenge = `http://127.0.0.1:5000//challenge/random`;
 export const numChallenges = (amount) => {return `http://127.0.0.1:5000//challenge/random/${amount}`};
 
 // Method: GET, PUT, DELETE
-export const bingoSetChallenges = (challengeID) => {return `http://127.0.0.1:5000//challenge/set/${challengeID}`};
+export const bingoSetChallenges = (id) => {return `http://127.0.0.1:5000//challenge/set/${id}`};
