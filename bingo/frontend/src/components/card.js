@@ -1,10 +1,8 @@
-import React, {useEffect, useState, useRef} from 'react'
+import React, {useEffect, useState, useRef, useContext} from 'react'
 import {Grid, Container} from '@mui/material';
 import {BoxStyle, CardGrid} from '../styles/cardStyles'
 
-function loadData() {
-
-}
+import { useChallengesContext } from '../hooks/context';
 
 // Make a Functional Component Here
 function CreateBoard(props) {
@@ -16,6 +14,7 @@ function CreateBoard(props) {
     }
 
     const [boxes, setBoxes] = useState(boxArray);
+    const challenges = useChallengesContext();
 
     // REFS
     const effectRan = useRef(false);
@@ -23,7 +22,19 @@ function CreateBoard(props) {
     useEffect(() => {
 
         if (effectRan.useEffect === true)
-            console.log(props.challengesData[0])
+        {
+            const tempList = [...boxes];
+
+            for (let i = 0; i < tempList.length; i++)
+            {
+                if (challenges.data[i].challenge)
+                    {
+                        tempList[i].item = challenges.data[i].challenge
+                    }
+            }
+            
+            setBoxes(tempList);
+        }
 
         return () => {
             effectRan.useEffect = true
@@ -40,11 +51,11 @@ function CreateBoard(props) {
     return (
         <Container sx={{flex: '2 1 auto'}}>
             <Grid container>
-                {boxes.map((item) => {
+                {boxes.map((box) => {
                     return (
-                    <CardGrid xs={2.2} key={item.id}>
-                        <BoxStyle onClick={() => {handleClick(item.id)}}>
-                        {boxes[item.id].value ? <div>Complete</div> : <div>{props.challengesData[item.id].challenge}</div>}
+                    <CardGrid xs={2.2} key={box.id}>
+                        <BoxStyle onClick={() => {handleClick(box.id)}}>
+                        {box.value ? <div>Complete</div> : <div>{box.item}</div>}
                         </BoxStyle>
                     </CardGrid>)
                 })}

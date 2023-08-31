@@ -21,17 +21,21 @@ function TeamDetails()  {
         teamBoxesArray[i] = {id: i, teamColor: teamColors[i]};
     }
 
+    const handleClick = (color) => {
+        console.log("Team Color Clicked: ", color);
+    }
+
     return (
         <LobbyContainer>
             <LobbyBox>
                 <Stack spacing={0}>
-                    {teamBoxesArray.map((item) => {
-                        return (<TeamBox bgcolor={item.teamColor} key={item.id}>
+                    {teamBoxesArray.map((box) => {
+                        return (<TeamBox bgcolor={box.teamColor} key={box.id} onClick={() => {handleClick(box.teamColor)}}>
                             <List>
-                            <ListItemText>Yes</ListItemText>
-                            <ListItemText>No</ListItemText>
-                            <ListItemText>HOMO</ListItemText>
-                            <ListItemText>HOMO</ListItemText>
+                                <ListItemText>Yes</ListItemText>
+                                <ListItemText>No</ListItemText>
+                                <ListItemText>HOMO</ListItemText>
+                                <ListItemText>HOMO</ListItemText>
                             </List>
                         </TeamBox>)
                     })}

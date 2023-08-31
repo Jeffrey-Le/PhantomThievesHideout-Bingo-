@@ -7,10 +7,17 @@ import GenerateNewBingoCard from './components/generateNewCard';
 import './App.css';
 import LoadExistingCard from './components/loadExistingCard';
 
-function Hi(props) {
-  const {num} = props;
+import { User, HostUser } from './components/user';
+
+function Hi() {
+  let normUser = new User();
+  let hostUser = new HostUser();
+
+  console.log(normUser);
+  console.log(hostUser);
+
   return (
-    <div>Hello Mom {num}</div>
+    <div>Hello Mom</div>
   )
 }
 
@@ -29,7 +36,9 @@ function App() {
       <LobbyDeatils/>
       <TeamDetails/>
       <StartButton/>
-      <LoadExistingCard/>
+      <div>
+        <Hi/>
+      </div>
     </div>
     </>
   );

@@ -34,6 +34,13 @@ const BoxStyle = styled(Box, {})({
     right: 0,
     bottom: 0,
     top: 0,
+  "&:hover": {
+    backgroundColor: "lightblue",
+    cursor: "pointer"
+  },
+  "&:active": {
+    backgroundColor: "yellow"
+  }
 });
 
 /*const boxStyle = {

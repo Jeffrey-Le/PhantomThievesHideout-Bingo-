@@ -126,7 +126,7 @@ function useFetch(url, options={}, oldData=[]) {
         setError(false);
         setLoading(true);
         try {
-
+            
             if (newData != null)
                 options.data = newData;
 
@@ -156,6 +156,7 @@ function useFetch(url, options={}, oldData=[]) {
 
     function appendData(newUrl, newOptions={})
     {
+        setError(false);
         setLoading(true);
         const addData = async () => {
             try {

@@ -1,10 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef , createContext} from "react";
 
 import useFetch from "../hooks/useFetch";
 
 import CreateBoard from "./card";
 
 import { bingoCards, bingoSetChallenges, numRandomBingoCards, randomSingleChallenge } from "../service/links";
+
+import { ChallengesContext } from "../hooks/context";
 
 function LoadExistingCard() {
     const [cards, setCards, updateCards, appendCards] = useFetch(numRandomBingoCards(1));
@@ -15,23 +17,27 @@ function LoadExistingCard() {
 
     useEffect(() => {
 
-        if (challengesLoaded.current === true && cards)
+        if (challengesLoaded.current === true)
         {
-            cardID = cards.data.id;
-            setChallenges(null, newUrl=bingoSetChallenges(cardID))
+            if (cards)
+            { 
+                const cardID = 6842
+                setChallenges(null, [], bingoSetChallenges(cardID), {method: 'GET'})
+            }
         }
 
         return () => {
             challengesLoaded.current = true
         }
 
-    }, [challenges.loading])
+    }, [cards.loading])
 
-    print(challenges)
+    if (challenges)
+        console.log('End LoadExistingCard')
 
     return (
         <>
-            {challenges.loading ? <div> Loading Challenges </div> : <CreateBoard challengsData={challenges.data}/>}
+            {challenges.data.length > 0 && <ChallengesContext.Provider value={challenges}> <CreateBoard /> </ChallengesContext.Provider>}
         </>
     )
     

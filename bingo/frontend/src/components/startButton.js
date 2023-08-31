@@ -1,32 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {Backdrop, Button} from '@mui/material'
 import styled from '@emotion/styled';
 import {red} from '@mui/material/colors'
-
-const seed = [9200, 1400, 1600, 7600, 8900];
+import GenerateNewBingoCard from "./generateNewCard";
+import LoadExistingCard from "./loadExistingCard";
 
 const ButtonStart = styled(Button, {})({
     maxWidth: '12vh',
     height: '5vh',
 });
 
-function getNewChallenges() {
-    
-}
-
-function generateNewBingoCard() {
-    console.log('Hello');
-
-    const randomIndex = Math.floor(Math.random() * seed.length);
-
-    const selectedSeed = seed[randomIndex];
-
-    console.log(`Selected Seed: ${selectedSeed}`)
-}
-
 function StartButton() {
+    const [click, setClick] = useState(false)
+
+    useEffect(() => {
+        console.log(click);
+    }, []);
+
+    const handleClick = () => {
+        console.log('CHANGING CLICK: ', click)
+        setClick(!click);
+        console.log('NEW CLICK: ', click)
+      }
+
     return (
-        <ButtonStart variant="contained" onClick={() => {generateNewBingoCard()}}> START </ButtonStart>
+        <>
+            <ButtonStart variant="contained" onClick={() => {handleClick()}}> START </ButtonStart>
+            {click ? <GenerateNewBingoCard/> : <LoadExistingCard/>}
+        </>
     )
 }
 

@@ -6,6 +6,8 @@ import useFetch from "../hooks/useFetch";
 import { allChallenges, bingoCards, bingoSetChallenges, numCategoryChallenges, numChallenges } from "../service/links";
 import CreateBoard from "./card";
 
+import { ChallengesContext } from "../hooks/context";
+
 function randomNewSeed() {
     const min = 1001;
     const max = 9999;
@@ -20,7 +22,6 @@ function GenerateNewBingoCard() {
 
     const [cards, setCards, updateCards] = useFetch(bingoCards);
     const [challenges, setChallenges, updateChallenges, appendChallenges] = useFetch(numChallenges(amount));
-    const [isDone, setIsDone] = useState(false);
 
     // Refs
     const isCardSet = useRef(false);
@@ -101,11 +102,11 @@ function GenerateNewBingoCard() {
         }
 
         
-    }, [challenges.loading]);
+    }, []);
 
     return (
         <>
-            {challenges.loading ? <div> Loading Challenges </div> : <CreateBoard challengesData={challenges.data}/>}
+            {challenges.data.length > 0 && <ChallengesContext.Provider value={challenges}> <CreateBoard/> </ChallengesContext.Provider> }
         </>
     )
 
