@@ -18,9 +18,8 @@ function StartButton() {
     }, []);
 
     const handleClick = () => {
-        console.log('CHANGING CLICK: ', click)
-        setClick(!click);
-        console.log('NEW CLICK: ', click)
+        console.log('Click: ', click);
+        setClick(true);
       }
 
     return (

@@ -19,9 +19,9 @@ function LoadExistingCard() {
 
         if (challengesLoaded.current === true)
         {
-            if (cards)
+            if (cards.data.length > 0)
             { 
-                const cardID = 6842
+                const cardID = cards.data[0].id
                 setChallenges(null, [], bingoSetChallenges(cardID), {method: 'GET'})
             }
         }
@@ -30,7 +30,7 @@ function LoadExistingCard() {
             challengesLoaded.current = true
         }
 
-    }, [cards.loading])
+    }, [cards.data])
 
     if (challenges)
         console.log('End LoadExistingCard')

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.sql import text
+from sqlalchemy.sql import text, func
 
 from ..extensions import db, ma
 
@@ -10,7 +10,7 @@ from ..models.challenge import Challenge, challenge_schema, challenges_schema
 
 bingoSetChallenges = Blueprint('bingo_set_challenges', __name__)
 
-@bingoSetChallenges.route('/challenge/set/<id>', methods = ['GET', 'PUT'])
+@bingoSetChallenges.route('/challenge/set/id=<id>', methods = ['GET', 'PUT'])
 def checkMethod(id):
     if request.method == 'GET':
         return getChallengesInSet(id)
@@ -34,3 +34,12 @@ def updateChallenge(id):
     db.session.commit()
 
     return 'Worked'
+
+@bingoSetChallenges.route('/challenge/set/amount=<amount>', methods = ['GET'])
+def getRandomNumChallengesInSet(amount):
+    challengeResults = Challenge.query.join(bingo_set_challenges).filter(bingo_set_challenges.c.challenge_id==Challenge.id).\
+    where(bingo_set_challenges.c.bingocard_id==None).order_by(func.random()).limit(amount)
+
+    result = challenges_schema.dump(challengeResults)
+
+    return jsonify(result)

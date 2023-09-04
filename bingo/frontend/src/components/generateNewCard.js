@@ -3,7 +3,7 @@ import axios from "axios";
 
 import useFetch from "../hooks/useFetch";
 
-import { allChallenges, bingoCards, bingoSetChallenges, numCategoryChallenges, numChallenges } from "../service/links";
+import { allChallenges, bingoCards, bingoSetChallenges, numCategoryChallenges, numChallenges, numSetChallenges } from "../service/links";
 import CreateBoard from "./card";
 
 import { ChallengesContext } from "../hooks/context";
@@ -21,22 +21,39 @@ function GenerateNewBingoCard() {
     const categories = ['crafting', 'collectables', 'advancement', 'chase'];
 
     const [cards, setCards, updateCards] = useFetch(bingoCards);
-    const [challenges, setChallenges, updateChallenges, appendChallenges] = useFetch(numChallenges(amount));
+    const [challenges, setChallenges, updateChallenges, appendChallenges] = useFetch(numSetChallenges(amount));
 
     // Refs
     const isCardSet = useRef(false);
     const isChallengesSet = useRef(false);
     const isBingoSetUpdated = useRef(false);
 
-    let newSeed = randomNewSeed();
+    useEffect(() => {
+    const doAddCard = () => {
+        let newSeed = randomNewSeed();
 
-    const cardPost = {
-        "seed": newSeed
+        for (let i = 0; i < cards.data.length; i++)
+        {
+            if (cards.data[i].seed === newSeed)
+            {
+                newSeed = randomNewSeed();
+                i = 0;
+                continue;
+            }
+        }
+
+        const cardPost = {
+            "seed": newSeed
+        }
+
+        setCards(cardPost);
     }
 
-    useEffect(() => {
+
         if (isCardSet.current === true)
-            setCards(cardPost);
+        {
+            doAddCard();
+        }
 
         return () => {
             isCardSet.current = true;
@@ -102,7 +119,7 @@ function GenerateNewBingoCard() {
         }
 
         
-    }, []);
+    }, [cards.data]);
 
     return (
         <>
