@@ -1,20 +1,19 @@
-from dotenv import load_dotenv, find_dotenv
+from dotenv import load_dotenv
 import os
 
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 
 from .extensions import db
+from .sockets.events import socketio
 
-from .bingoSetChallenge.routes import bingoSetChallenges
-from .bingoCard.routes import bingoCard
-from.challenge.routes import challenge
+from .api.bingoSetChallenge.routes import bingoSetChallenges
+from .api.bingoCard.routes import bingoCard
+from .api.challenge.routes import challenge
 
 def create_app():
 
-    load_dotenv('.env')
+    load_dotenv('bingo/backend/.env')
 
     app = Flask(__name__)
     CORS(app)
@@ -25,6 +24,7 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
+    socketio.init_app(app, cors_allowed_origins="*")
 
     app.register_blueprint(bingoSetChallenges)
     app.register_blueprint(bingoCard)
