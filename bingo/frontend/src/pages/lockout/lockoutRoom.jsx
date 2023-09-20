@@ -1,10 +1,12 @@
 import { useState } from "react";
 
-import LobbyDeatils from './lobbyDetails'
-import TeamDetails from "./teamDetails";
-import StartButton from "./startButton";
+import LobbyDeatils from './components/lobbyDetails'
+import TeamDetails from "./components/teamDetails";
+import StartButton from "./components/startButton";
 
 function LockoutRoom() {
+    
+
     return (
         <>
             <LobbyDeatils/>

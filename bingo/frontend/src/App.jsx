@@ -2,14 +2,16 @@ import './App.css';
 
 import { useEffect, useState } from 'react'
 
-import Home from './pages/home/components/home';
+import {BrowserRouter, Route, Routes} from 'react-router-dom'
+
+import socket from './service/socket';
 
 import { User, HostUser } from './shared/user';
 
-import {BrowserRouter, Route, Routes} from 'react-router-dom'
-import LockoutHome from './pages/lockout/components/lockoutHome';
-import socket from './service/socket';
-import LockoutRoom from './pages/lockout/components/lockoutRoom';
+import Home from './pages/home/components/home';
+import LockoutHome from './pages/lockout/lockoutHome';
+import LockoutRoom from './pages/lockout/lockoutRoom';
+
 
 
 function Hi() {
@@ -26,19 +28,6 @@ function Hi() {
 
 
 function App() {
-  const [number, setNumber] = useState(0);
-
-  const add = () => {
-    setNumber(number + 1);
-  }
-
-  useEffect(() => {
-    if (socket)
-      console.log(socket)
-    else
-      console.log('Eror No SOckets')
-  }, [])
-
   return (
     <>
     <div className="App">

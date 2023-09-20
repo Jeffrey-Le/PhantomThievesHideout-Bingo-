@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {Box, List, ListItemText} from '@mui/material'
 import {purple} from '@mui/material/colors'
 import {LobbyBox, LobbyContainer } from '../styles/lobbyStyles'
+
+import socket from '../../../service/socket'
 
 // Lobby Details Title
 const purples = purple[500];
@@ -14,6 +16,26 @@ const detailsTitle = {
 
 function LobbyDeatils()
 {
+    const loadCode = () => {
+        socket.connect()
+
+        socket.on('connect', () => {
+            console.log('CONNECTING')
+            console.log(socket.id)
+        })
+
+        socket.on('userConnected', (data) => {
+            console.log('data: ', data)
+            console.log(data.name, data.message)
+        })
+        console.log('Working')
+    }
+
+    useEffect(() => {
+        //socket.disconnect()
+        loadCode();
+    }, [])
+
     return (
         <>
         <LobbyContainer>
