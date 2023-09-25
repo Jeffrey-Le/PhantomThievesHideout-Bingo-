@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useRef, useContext} from 'react'
 import {Grid, Container} from '@mui/material';
-import {BoxStyle, CardGrid} from '../styles/cardStyles'
+import {BoxStyle, CardGrid} from './cardStyles'
 
 import { useChallengesContext } from '../../../hooks/context';
 

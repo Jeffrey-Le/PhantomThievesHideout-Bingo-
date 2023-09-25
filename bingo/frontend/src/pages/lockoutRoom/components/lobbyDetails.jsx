@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {Box, List, ListItemText} from '@mui/material'
 import {purple} from '@mui/material/colors'
-import {LobbyBox, LobbyContainer } from '../styles/lobbyStyles'
+import {LobbyBox, LobbyContainer } from './lobbyStyles'
 
-import socket from '../../../service/socket'
+import { useInfoContext } from '../../../hooks/context'
 
 // Lobby Details Title
 const purples = purple[500];
@@ -16,19 +16,27 @@ const detailsTitle = {
 
 function LobbyDeatils()
 {
+    const info = useInfoContext();
+    const [user, setUser] = info.user;
+    const [room, setRoom] = info.room;
+    const socket = info.socket;
+
+    const [users, setUsers] = useState([]);
+
     const loadCode = () => {
         socket.connect()
 
-        socket.on('connect', () => {
+        socket.on('userConnected', (data) => {
             console.log('CONNECTING')
             console.log(socket.id)
+            
+            setUsers(data);
         })
 
-        socket.on('userConnected', (data) => {
-            console.log('data: ', data)
-            console.log(data.name, data.message)
-        })
-        console.log('Working')
+
+        setTimeout(() => {
+            socket.disconnect();
+        }, 5000);
     }
 
     useEffect(() => {
@@ -42,11 +50,12 @@ function LobbyDeatils()
             <LobbyBox>
                 <List>
                     <ListItemText primaryTypographyProps={{style: detailsTitle}}>Lobby Details</ListItemText>
-                    <ListItemText>Name 1</ListItemText>
-                    <ListItemText>Name 2</ListItemText>
-                    <ListItemText>Name 3</ListItemText>
-                    <ListItemText>Name 4</ListItemText>
-                    <ListItemText>Name 5</ListItemText>
+                    <ListItemText> {room} </ListItemText>
+                    {users.map((user) => {
+                        return (
+                        <ListItemText> {user.name} </ListItemText>
+                        )
+                    })}
                 </List>
             </LobbyBox>
         </LobbyContainer>

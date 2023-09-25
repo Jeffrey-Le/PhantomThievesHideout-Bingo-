@@ -5,14 +5,19 @@ import { Container, FormControl, FormLabel, Paper, TextField, Typography } from 
 import { BaseContainer, FlexContainer } from "../../shared/styles/containerStyles";
 import { Routes, Route, useNavigate } from "react-router";
 
-import LockoutRoom from "./lockoutRoom";
-
 import { HostUser, User} from "../../shared/user";
 import styled from "@emotion/styled";
 
+import CenteredTitle from "./components/centeredTitle";
+import JoinNavigator from "./components/joinNavigator";
+import { useInfoContext } from "../../hooks/context";
 
-function LockoutHome({socket}) {
 
+function LockoutHome() {
+    const info = useInfoContext();
+    const [user, setUser] = info.user;
+    const [room, setRoom] = info.room;
+/*
     useEffect(() => {
         socket.disconnect()
     }, [])
@@ -57,7 +62,7 @@ function LockoutHome({socket}) {
         setTimeout(() => {
             socket.disconnect();
         }, 2000);
-        */
+        
         
     }
 
@@ -111,27 +116,10 @@ function LockoutHome({socket}) {
         socket.disconnect()
     })
 
-// STYLES //
-const TitleContainer = styled(BaseContainer, {})({
-    backgroundColor: 'blue'
-})
-
-const Title = styled(Typography, {})({
-    textAlign: 'center',
-    display: 'block',
-    color: 'black',
-    justifySelf: 'start',
-    alignSelf: 'normal',
-    fontSize: '5vh'
-})
-
 
 //<Route value={roomCode} path={`lockout/room/${roomCode}`} element={<LockoutRoom socket={socket}/>}/>
     return (
         <>
-        <Routes>
-            <Route path={`lockout/room`} element={<LockoutRoom socket={socket}/>}/>
-        </Routes>
 
         <FlexContainer sx={{flexDirection: 'column'}}>
 
@@ -161,6 +149,19 @@ const Title = styled(Typography, {})({
 
         </>
     )
+    */
+
+   return (
+    <>
+        <FlexContainer sx={{flexDirection: 'column'}}>
+
+            <CenteredTitle title='Lockout' />
+
+            <JoinNavigator user={user} room={room} setUser={setUser} setRoom={setRoom}/>
+
+        </FlexContainer>
+    </>
+   )
 }
 
 export default LockoutHome;

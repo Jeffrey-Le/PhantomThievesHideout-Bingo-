@@ -14,5 +14,17 @@ function useChallengesContext() {
     return challenges;
 }
 
+const InfoContext = createContext(undefined);
 
-export {ChallengesContext, useChallengesContext};
+function useInfoContext() {
+    const info = useContext(InfoContext);
+
+    if (info === undefined) {
+        throw new Error("useInfoContext must be used with a InfoContext");
+    }
+
+    return info;
+}
+
+
+export {ChallengesContext, useChallengesContext, InfoContext, useInfoContext};

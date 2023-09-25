@@ -26,6 +26,13 @@ def handleConenct():
     print(request.sid)
     print("Client is connected")
 
+    user2 = {'code': 0, 'name': 'Guest 2', 'sid': request.sid, 'team': 'red'}
+    user3 = {'code': 0, 'name': 'Guest 3', 'sid': request.sid, 'team': 'green'}
+
+    currentUsers = [user2, user3]
+
+    emit('userConnected', currentUsers)
+
 @socketio.on('disconnect')
 def disconnected():
     print('User Disconnected')
