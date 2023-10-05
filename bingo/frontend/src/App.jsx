@@ -1,6 +1,6 @@
 import './App.css';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 import {BrowserRouter, Route, Routes} from 'react-router-dom'
 
@@ -33,7 +33,41 @@ function App() {
   const [user, setUser] = useState(new User());
 
   const [room, setRoom] = useState(0);
+
+  // Refs
+  const effectRan = useRef(false);
 // user={user} room={room} setUser={setUser} setRoom={setRoom} socket={socket}
+
+  useEffect(() => {
+    if (effectRan.useEffect === true)
+      socket.connect();
+    /*
+    setTimeout(() => {
+      socket.disconnect();
+    }, 1000);
+    */
+
+    return (() => {
+      effectRan.useEffect = true;
+    })
+  }, [])
+
+  socket.on('connected', () => {
+    const tempUser = user;
+    tempUser.sid = socket.id;
+    setUser(tempUser);
+    console.log(tempUser);
+    
+  })
+
+  window.addEventListener("beforeunload", (ev) => {
+    ev.preventDefault();
+
+    socket.emit('forceDisconnect', user['sid'], room);
+
+    return ev.returnValue = 'Are you sure you want to close?';
+  })
+
   return (
     <>
     <div className="App">

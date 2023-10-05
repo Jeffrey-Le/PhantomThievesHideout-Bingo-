@@ -8,7 +8,7 @@ from ..extensions import socketio
 from string import ascii_uppercase
 
 roomsCode = {}
-users = {}
+users = []
 
 def generateUniqueCode(length):
     while True:
@@ -31,31 +31,40 @@ def handleConenct():
 
     currentUsers = [user2, user3]
 
-    emit('userConnected', currentUsers)
+    emit('connected')
+    #emit('userConnected', currentUsers)
 
-@socketio.on('disconnect')
-def disconnected():
+@socketio.on('forceDisconnect')
+def forceDisconnect(sid, roomCode):
     print('User Disconnected')
-    emit("disconnect", f'user {request.sid} has been disconnected', broadcast=True)
+    print(sid)
+    print(roomCode)
+    user = next((x for x in users if x['sid'] == sid), None)
+    print(user)
+    users.remove(user)
+    print(users)
+    emit('userDisconnect', users, to=roomCode)
 
 
 @socketio.on('createRoom')
-def handleRoomCreation():
+def handleRoomCreation(user):
     print('Creating Room!')
     code = generateUniqueCode(4)
 
     roomsCode[f'{request.sid}'] = code
-    print(roomsCode)
+    print(f'RoomsCode: {roomsCode}')
 
-    join_room(code)
+    #join_room(code)
 
     print('Room Code: ', code)
-    jsonData = {'code': code, 'name': 'Guest 1 (Host)', 'sid': request.sid}
-    print(rooms(sid=request.sid))
-    emit('createRoom', jsonData)
+    print(f'User: {user}')
+    user['name']='Guest 1 (Host)'
+    users.append(user)
+    #print(rooms(sid=request.sid))
+    emit('redirect', (user, code))
 
 @socketio.on('joinRoom')
-def handleJoin(code):
+def handleJoin(user, code):
     print('Checking Rooms')
     if (code in roomsCode.values()):
         print('Joining Room')
@@ -63,14 +72,14 @@ def handleJoin(code):
         print(code)
 
         join_room(code)
-        jsonData = {'code': code, 'name': 'Guest 2', 'sid': request.sid}
-        print(roomsCode)
-        users[f'{request.sid}'] = jsonData
-        send({"name": f'{jsonData["name"]}', "message": 'has joined the room'},  to=code)
+        user['name']='Guest 2'
+        print(f'RoomsCode: {roomsCode}')
+        users.append(user)
+        send({"name": f'{user["name"]}', "message": 'has joined the room'},  to=code)
 
-        print(f'{jsonData["name"]} joined room {code}')
+        #print(f'{jsonData["name"]} joined room {code}')
 
-        emit('joinRoom', jsonData)
+        emit('redirect', (user, code))
     else:
         emit('error')
 
@@ -78,10 +87,35 @@ def handleJoin(code):
 def handleRedirect():
     emit('redirect')
 
-@socketio.on('userConnected')
-def handleUserConnection(sid):
-    user = users[sid]
+@socketio.on('userConnect')
+def handleUserConnection(sid, roomCode):
+    print(f'users: {users}')
+    '''
+    user = next((obj for obj in users if obj.sid == sid), None)
     print('UserConnected')
     send({"name": f'{user["name"]}', "message": 'has joined the room'},  to=user["code"])
     print(user["name"], user["code"])
-    emit('userConnected')
+    '''
+    join_room(roomCode)
+    emit('userConnected', users)
+
+@socketio.on('signalBoard')
+def handleBoardSignal():
+    print('signalBoard')
+    emit('signaledBoard')
+
+@socketio.on('loadBoard')
+def handleBoardLoading(roomCode, boardBoxes):
+    print('helloLoadBoard')
+    print(f'boardBoxes: {boardBoxes}')
+
+    emit('loadBoard', boardBoxes, to=roomCode, include_self=False)
+
+@socketio.on('changeTeam')
+def handleTeamChange(members, roomCode, teamBoxes):
+    print('helloTeamChange')
+    print(f'TeamBoxes: {teamBoxes}')
+    users[:] = members[:]
+    print(members)
+
+    emit('changeTeam', teamBoxes, to=roomCode, include_self=False)

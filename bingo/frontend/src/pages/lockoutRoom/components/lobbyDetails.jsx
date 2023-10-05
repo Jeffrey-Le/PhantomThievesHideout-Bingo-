@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {Box, List, ListItemText} from '@mui/material'
 import {purple} from '@mui/material/colors'
 import {LobbyBox, LobbyContainer } from './lobbyStyles'
@@ -21,28 +21,46 @@ function LobbyDeatils()
     const [room, setRoom] = info.room;
     const socket = info.socket;
 
-    const [users, setUsers] = useState([]);
+    const [members, setMembers] = useState([]);
+
+    // Refs
+    const effectRan = useRef(false);
 
     const loadCode = () => {
-        socket.connect()
+        socket.emit('userConnect', user.sid, room);
+        socket.emit('signalBoard');
 
         socket.on('userConnected', (data) => {
             console.log('CONNECTING')
             console.log(socket.id)
+
+            data.push(user);
             
-            setUsers(data);
+            setMembers(data);
+            console.log(data);
         })
 
-
+        /*
         setTimeout(() => {
             socket.disconnect();
         }, 5000);
+        */
     }
 
     useEffect(() => {
         //socket.disconnect()
-        loadCode();
+        if (effectRan.useEffect === true)
+            loadCode();
+
+        return (() => {
+            effectRan.useEffect = true;
+        })
     }, [])
+
+    socket.on('userDisconnect', (users) => {
+        console.log('userDisconencted')
+        setMembers(users);
+    })
 
     return (
         <>
@@ -51,7 +69,7 @@ function LobbyDeatils()
                 <List>
                     <ListItemText primaryTypographyProps={{style: detailsTitle}}>Lobby Details</ListItemText>
                     <ListItemText> {room} </ListItemText>
-                    {users.map((user) => {
+                    {members.length > 0 && members.map((user) => {
                         return (
                         <ListItemText> {user.name} </ListItemText>
                         )

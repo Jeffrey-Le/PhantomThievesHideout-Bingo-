@@ -17,6 +17,7 @@ function LockoutHome() {
     const info = useInfoContext();
     const [user, setUser] = info.user;
     const [room, setRoom] = info.room;
+    const socket = info.socket;
 /*
     useEffect(() => {
         socket.disconnect()
@@ -151,13 +152,17 @@ function LockoutHome() {
     )
     */
 
+    useEffect(() => {
+        console.log(user);
+    }, [])
+
    return (
     <>
         <FlexContainer sx={{flexDirection: 'column'}}>
 
             <CenteredTitle title='Lockout' />
 
-            <JoinNavigator user={user} room={room} setUser={setUser} setRoom={setRoom}/>
+            <JoinNavigator user={user} room={room} setUser={setUser} setRoom={setRoom} socket={socket}/>
 
         </FlexContainer>
     </>

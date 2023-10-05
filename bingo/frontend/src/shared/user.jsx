@@ -5,6 +5,7 @@ class User {
         this.adminLevel=1;
         this.name=name;
         this.sid=sid
+        this.team=null;
     }
 }
 
@@ -15,6 +16,7 @@ class HostUser extends User {
         this.adminLevel=2;
         this.name=name;
         this.sid=sid
+        this.team=null;
     }
 }
 

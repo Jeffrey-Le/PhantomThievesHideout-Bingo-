@@ -2,10 +2,14 @@ import React, {useEffect, useState, useRef, useContext} from 'react'
 import {Grid, Container} from '@mui/material';
 import {BoxStyle, CardGrid} from './cardStyles'
 
-import { useChallengesContext } from '../../../hooks/context';
+import { useChallengesContext, useInfoContext } from '../../../hooks/context';
 
 // Make a Functional Component Here
 function CreateBoard(props) {
+    const info = useInfoContext();
+    const [room, setRoom] = info.room;
+    const socket = info.socket;
+
     var boxArray = [];
 
     for (var i  = 0; i < 25; i++)
@@ -34,7 +38,17 @@ function CreateBoard(props) {
             }
             
             setBoxes(tempList);
+
+            socket.on('signaledBoard', () => {
+                console.log('SignaledBoard')
+                socket.emit('loadBoard', boxes);
+            })
+
         }
+
+        socket.on('loadBoard', (data) => {
+            setBoxes(data);
+        })
 
         return () => {
             effectRan.useEffect = true

@@ -26,6 +26,7 @@ function TeamDetails()  {
 
     const info = useInfoContext();
     const [user, setUser] = info.user;
+    const [room, setRoom] = info.room;
     const socket = info.socket;
 
     // States
@@ -41,9 +42,9 @@ function TeamDetails()  {
         setUser(tempUser);
 
         const connect = () => {
-            socket.connect();
 
             socket.on('userConnected', (data) => {
+                console.log('CONNECTING TEAM DETAILS')
                 const oldBoxes = [...teamBoxes];
 
                 setMembers(data);
@@ -51,13 +52,16 @@ function TeamDetails()  {
                 console.log(data);
 
                 data.forEach((user) => {
-                    const index = oldBoxes.findIndex(box => box.name === user.team)
+                    if (user.team !== null)
+                     {
+                        const index = oldBoxes.findIndex(box => box.name === user.team)
 
-                    oldBoxes[index].users.push(user);
+                        oldBoxes[index].users.push(user);
+                     }
                 })
 
                 setTeamBoxes(oldBoxes);
-                socket.disconnect();
+                //socket.disconnect();
             })
         }
 
@@ -91,14 +95,23 @@ function TeamDetails()  {
         }
 
         const addUser = () => {
+            console.log(members)
+            console.log(user)
+
+            const tempMembers = [...members];
+            const userIndex = tempMembers.indexOf(user);
+            tempMembers.splice(userIndex, 1);
+
+            setMembers(tempMembers);
+
             const index = teamColors.findIndex(colors => colors.color == box.teamColor);
     
             const tempUser = user;
-            tempUser.name = 'Guest 4';
             tempUser.team = teamColors[index].name;
             setUser(tempUser);
     
             box.users.push(user);
+            members.push(user);
         }
 
         if (user.team != null)
@@ -112,8 +125,15 @@ function TeamDetails()  {
             
         setTeamBoxes(oldBoxes);
 
+        socket.emit('changeTeam', members, room, teamBoxes);
 
     }
+
+    socket.on('changeTeam', (data) => {
+        console.log(data)
+        setTeamBoxes(data)
+        
+    })
 
     return (
         <LobbyContainer>
