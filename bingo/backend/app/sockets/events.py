@@ -34,6 +34,17 @@ def handleConenct():
     emit('connected')
     #emit('userConnected', currentUsers)
 
+@socketio.on('disconnect')
+def handleDisconenct():
+    print('User Disconnected')
+    user = next((x for x in users if x['sid'] == request.sid), None)
+    print(user)
+    users.remove(user)
+    print(users)
+
+    hostSID = users[0].sid
+    emit('updateMembers', users, to=roomsCode[hostSID])
+
 @socketio.on('forceDisconnect')
 def forceDisconnect(sid, roomCode):
     print('User Disconnected')
@@ -43,7 +54,7 @@ def forceDisconnect(sid, roomCode):
     print(user)
     users.remove(user)
     print(users)
-    emit('userDisconnect', users, to=roomCode)
+    emit('updateMembers', users, to=roomCode)
 
 
 @socketio.on('createRoom')
@@ -59,7 +70,7 @@ def handleRoomCreation(user):
     print('Room Code: ', code)
     print(f'User: {user}')
     user['name']='Guest 1 (Host)'
-    users.append(user)
+    #users.append(user)
     #print(rooms(sid=request.sid))
     emit('redirect', (user, code))
 
@@ -69,15 +80,12 @@ def handleJoin(user, code):
     if (code in roomsCode.values()):
         print('Joining Room')
 
-        print(code)
-
         join_room(code)
-        user['name']='Guest 2'
-        print(f'RoomsCode: {roomsCode}')
-        users.append(user)
-        send({"name": f'{user["name"]}', "message": 'has joined the room'},  to=code)
+        print(f'Users joinRoom: {users}')
+        
+        usersLength = len(users)
 
-        #print(f'{jsonData["name"]} joined room {code}')
+        user['name']=f'Guest {usersLength+1}'
 
         emit('redirect', (user, code))
     else:
@@ -88,16 +96,20 @@ def handleRedirect():
     emit('redirect')
 
 @socketio.on('userConnect')
-def handleUserConnection(sid, roomCode):
+def handleUserConnection(user, sid, roomCode):
     print(f'users: {users}')
-    '''
-    user = next((obj for obj in users if obj.sid == sid), None)
-    print('UserConnected')
-    send({"name": f'{user["name"]}', "message": 'has joined the room'},  to=user["code"])
-    print(user["name"], user["code"])
-    '''
+
     join_room(roomCode)
-    emit('userConnected', users)
+
+    send({"name": f'{user["name"]}', "message": 'has joined the room'},  to=roomCode)
+    
+    emit('userConnected', users, to=roomCode)
+
+@socketio.on('updateExistingUsers')
+def handleUpdateExistingUsers(updatedUsers, roomCode):
+    users[:] = updatedUsers[:]
+    emit('updateMembers', users, to=roomCode)
+
 
 @socketio.on('signalBoard')
 def handleBoardSignal():

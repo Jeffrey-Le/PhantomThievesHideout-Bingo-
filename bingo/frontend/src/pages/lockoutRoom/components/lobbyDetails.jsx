@@ -27,16 +27,24 @@ function LobbyDeatils()
     const effectRan = useRef(false);
 
     const loadCode = () => {
-        socket.emit('userConnect', user.sid, room);
+        socket.emit('userConnect', user, user.sid, room);
         socket.emit('signalBoard');
 
         socket.on('userConnected', (data) => {
             console.log('CONNECTING')
             console.log(socket.id)
 
-            data.push(user);
-            
-            setMembers(data);
+            if (!data.find((item) => JSON.stringify(item) === JSON.stringify(user)))
+            {
+                data.push(user);
+                setMembers(data);
+                socket.emit('updateExistingUsers', data, room)
+            }
+            else
+                console.log('equals');
+
+
+
             console.log(data);
         })
 
@@ -59,6 +67,10 @@ function LobbyDeatils()
 
     socket.on('userDisconnect', (users) => {
         console.log('userDisconencted')
+        setMembers(users);
+    })
+
+    socket.on('updateMembers', (users) => {
         setMembers(users);
     })
 
