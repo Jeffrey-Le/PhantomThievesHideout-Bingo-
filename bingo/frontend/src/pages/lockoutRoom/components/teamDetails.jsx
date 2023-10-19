@@ -13,7 +13,7 @@ const TeamBox = styled(Box, {})({
     height: '12.5vh',
 });
 
-function TeamDetails()  {
+function TeamDetails({members, setMembers})  {
     const teamColors = [{name: 'red', color: 'rgba(255, 0, 0, 0.7)'}, {name: 'blue' , color: 'rgba(0, 0, 128, 0.7)'}, 
     {name: 'green', color: 'rgba(0, 128, 0, 0.7)'}, {name: 'yellow', color: 'rgba(255, 255, 0, 0.7)'}];
 
@@ -31,108 +31,93 @@ function TeamDetails()  {
 
     // States
     const [teamBoxes, setTeamBoxes] = useState(teamBoxesArray);
-    const [members, setMembers] = useState([]);
+    const [clicked, setClick] = useState(false);
 
     // Refs
     const isConnected = useRef(false);
     
-    useEffect(() => {
+    /*
+    TODO 1) Load Existing Users From Backend Into Current Client Teams Boxes // check
+    TODO 2a) BASE CASE: On Click assign user team color from null // check
+    TODO 2b) BASE CASE: Update Other Users through backend and update their client team boxes // check
+    TODO 2c) On Click Remove user from old team color through frontend and assign new team color // check
+    TODO 2d) Update Other Users through backend and update their client team boxes
+    TODO 3a) Remvoe User from TeamBoxes on disconnect
+    TODO 3b) Update other users through backend and update their client team boxes
+    */
+
+    socket.on('userConnected', (existingUsers) => {
+        // Give User a null team
+
         const tempUser = user;
         tempUser.team = null;
         setUser(tempUser);
 
-        const connect = () => {
+        const tempBoxes = [...teamBoxes];
 
-            socket.on('userConnected', (data) => {
-                console.log('CONNECTING TEAM DETAILS')
-                const oldBoxes = [...teamBoxes];
+        existingUsers.forEach((user) => {
+            if (user.team != null)
+            {
+                const index = tempBoxes.findIndex(box => box.name === user.team)
 
-                setMembers(data);
+                if (!tempBoxes[index].users.find((item) => JSON.stringify(item).sid === JSON.stringify(user).sid))
+                tempBoxes[index].users.push(user);
+            }
+        })
 
-                console.log(data);
+        setTeamBoxes(tempBoxes);
+    })
 
-                data.forEach((user) => {
-                    if (user.team !== null)
-                     {
-                        const index = oldBoxes.findIndex(box => box.name === user.team)
-
-                        oldBoxes[index].users.push(user);
-                     }
-                })
-
-                setTeamBoxes(oldBoxes);
-                //socket.disconnect();
-            })
-        }
-
-        if (isConnected.current === true)
-        {
-            connect();
-        }
-
-        return () => {
-            isConnected.current = true;
-        }
-    }, []);
-
-    const handleClick = (box) => {
-        const indexBox = teamBoxes.findIndex(item => item.id === box.id);
-
-        const removeUser = () => {
-            teamBoxes.forEach((box) => {
-                if (box.users.length > 0)
-                {
-                    box.users.forEach((member) => {
-                        if (member === user)
-                        {
-                            const index = box.users.indexOf(user);
-                            box.users.splice(index, 1);
-                        }
-                    })
-                }
-            })
-
-        }
-
-        const addUser = () => {
-            console.log(members)
-            console.log(user)
-
-            const tempMembers = [...members];
-            const userIndex = tempMembers.indexOf(user);
-            tempMembers.splice(userIndex, 1);
-
-            setMembers(tempMembers);
-
-            const index = teamColors.findIndex(colors => colors.color == box.teamColor);
-    
-            const tempUser = user;
-            tempUser.team = teamColors[index].name;
-            setUser(tempUser);
-    
-            box.users.push(user);
-            members.push(user);
-        }
-
-        if (user.team != null)
-            removeUser();
-
-        addUser();
-
-        const oldBoxes = [...teamBoxes];
-
-        oldBoxes[indexBox] = box;
-            
-        setTeamBoxes(oldBoxes);
-
-        socket.emit('changeTeam', members, room, teamBoxes);
-
+    const removeUser = (orginalBoxes, userToRemove) => {
+        console.log(userToRemove)
+        orginalBoxes.forEach((box) => {
+            if (box.users.find((item) => JSON.stringify(item.sid) === JSON.stringify(userToRemove.sid)))
+            {
+                const oldUserIndex = box.users.findIndex((item) => JSON.stringify(item.sid) === JSON.stringify(userToRemove.sid));
+                console.log(oldUserIndex)
+                box.users.splice(oldUserIndex, 1);
+            }
+        })
     }
 
-    socket.on('changeTeam', (data) => {
-        console.log(data)
-        setTeamBoxes(data)
-        
+    const handleClick = (box) => {
+        const tempBoxes = [...teamBoxes];
+
+        const addUser = () => {
+            const tempUser = user;
+            tempUser.team = box.name;
+
+            box.users.push(tempUser);
+
+            setUser(tempUser);
+        }
+
+        // remove team from old color
+        console.log('User before Remove: ', user)
+        if (user.team != null)
+            removeUser(tempBoxes, user)
+
+        // base case: add user to box users
+        addUser();
+
+        setTeamBoxes(tempBoxes);
+
+        socket.emit('changeTeam', members, user, room, tempBoxes);
+    }
+   
+    socket.on('changeTeam', (newBoxes) => {
+        console.log(newBoxes)
+        setTeamBoxes(newBoxes)
+    })
+
+    socket.on('userDisconnect', (removedUser) => {
+        console.log('IN TEAM BOXES DC')
+        const tempBoxes = [...teamBoxes];
+
+        removeUser(tempBoxes, removedUser)
+
+        setTeamBoxes(tempBoxes)
+
     })
 
     return (

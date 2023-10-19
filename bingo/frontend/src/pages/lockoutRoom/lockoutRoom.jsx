@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import LobbyDeatils from './components/lobbyDetails'
 import TeamDetails from "./components/teamDetails";
@@ -14,20 +14,69 @@ function LockoutRoom() {
     const [room, setRoom] = info.room;
     const socket = info.socket;
 
+    const [members, setMembers] = useState([]);
+
     const [click, setClick] = useState(true);
+
+     // Refs
+     const effectRan = useRef(false);
+
+     const loadCode = () => {
+         socket.emit('userConnect', user, user.sid, room);
+         socket.emit('signalBoard');
+ 
+         socket.on('userConnected', (data) => {
+             console.log('CONNECTING')
+             console.log('UserConnected: ', data)
+ 
+             if (!data.find((item) => JSON.stringify(item.sid) === JSON.stringify(user.sid)))
+             {
+                 data.push(user);
+                 setMembers(data);
+                 socket.emit('updateExistingUsers', data, room)
+             }
+             else
+                 setMembers(data);
+ 
+ 
+ 
+             console.log(data);
+         })
+ 
+     }
     
     useEffect(() => {
         socket.connect()
         
-        console.log(socket)
-        console.log(user);
-        console.log(room);
+        if (effectRan.useEffect === true)
+            loadCode();
+
+        return (() => {
+            effectRan.useEffect = true;
+        })
     }, []);
+
+    socket.on('userDisconnect', (users) => {
+        console.log('userDisconencted')
+        //setMembers(users);
+    })
+
+    // ONLY RUNS IF OTHER PEOPLE CHANGE MEMBERS
+    socket.on('updateMembers', (users) => {
+        console.log('updateMembers')
+        setMembers(users);
+    })
+
+    // DISPLAYS SEND MESAGE
+    socket.on('message', (data) => {
+        const message = data.name + data.message;
+        console.log(message);
+    })
 
     return (
         <>
-            <LobbyDeatils/>
-            <TeamDetails/>
+            <LobbyDeatils members={members} setMembers={setMembers}/>
+            <TeamDetails members={members} setMembers={setMembers}/>
             <RefreshButton setClick={setClick}/>
             {click ? <LoadExistingCard/> : <div> LOADING </div>}
         </>

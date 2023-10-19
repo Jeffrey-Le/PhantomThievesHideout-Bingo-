@@ -41,11 +41,6 @@ function App() {
   useEffect(() => {
     if (effectRan.useEffect === true)
       socket.connect();
-    /*
-    setTimeout(() => {
-      socket.disconnect();
-    }, 1000);
-    */
 
     return (() => {
       effectRan.useEffect = true;
@@ -56,18 +51,15 @@ function App() {
     const tempUser = user;
     tempUser.sid = socket.id;
     setUser(tempUser);
-    console.log(tempUser);
-    
   })
 
+  /*
   window.addEventListener("beforeunload", (ev) => {
     ev.preventDefault();
 
-    socket.emit('forceDisconnect', user['sid'], room);
-
     return ev.returnValue = 'Are you sure you want to close?';
   })
-
+*/
   return (
     <>
     <div className="App">
