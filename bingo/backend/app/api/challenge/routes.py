@@ -19,6 +19,8 @@ def checkMethod1():
 def getAllChallenges():
     allChallenges = Challenge.query.all()
     results = challenges_schema.dump(allChallenges)
+    existingChallenges = results
+
     return jsonify(results)
 
 def addChallenge():
@@ -76,6 +78,8 @@ def getChallengeByCategory(challengeCategory):
     allChallenges = Challenge.query.filter(Challenge.category == challengeCategory).all()
     
     results = challenges_schema.dump(allChallenges)
+    existingChallenges = results
+    
     return jsonify(results)
 
 @challenge.route('/challenge/random', methods = ['GET'])
@@ -96,6 +100,9 @@ def getRandomChallenges(amount):
     challengeResults = Challenge.query.order_by(func.random()).limit(amount)
 
     result = challenges_schema.dump(challengeResults)
+    #existingChallenges = result
+
+    #print(f'ROUTES NEW EXISTING CHALLENGES:  {existingChallenges}')
 
     return jsonify(result)
 
@@ -104,5 +111,6 @@ def getRandomChallengesByCategory(amount, challengeCategory):
     challengeResults = Challenge.query.filter(Challenge.category == challengeCategory).order_by(func.random()).limit(amount)
 
     result = challenges_schema.dump(challengeResults)
+    existingChallenges = result
 
     return jsonify(result)

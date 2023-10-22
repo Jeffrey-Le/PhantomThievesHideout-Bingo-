@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import styled from '@emotion/styled';
 
 import BaseButton from "../../../shared/styles/buttonBase";
+import socket from "services/socket";
 
-function RefreshButton({setClick}) {
+function RefreshButton({click, setClick, id}) {
 
     const ButtonRefresh = styled(BaseButton, {})({
         maxWidth: '12vh',
@@ -12,12 +13,21 @@ function RefreshButton({setClick}) {
     });
 
     const handleClick = () => {
-        setClick(false);
+        var tempClick = click;
+
+        tempClick = false;
+        
+        setClick(tempClick);
+
         setTimeout(() => {
-            setClick(true);
+            tempClick = true;
+
+            setClick(tempClick);
+            socket.emit('signalBoard', id)
         }, 1000)
         
     }
+
 
     return (
         <>

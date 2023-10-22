@@ -6,3 +6,10 @@ from flask_socketio import SocketIO
 db = SQLAlchemy()
 ma = Marshmallow()
 socketio = SocketIO()
+
+# Global Variables
+existingChallengesOne = []
+existingChallengesTwo = []
+
+currentBoardOne = []
+currentBoardTwo = []

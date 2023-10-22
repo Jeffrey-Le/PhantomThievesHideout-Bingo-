@@ -50,15 +50,15 @@ function TeamDetails({members, setMembers})  {
         // Give User a null team
 
         const tempUser = user;
-        tempUser.team = null;
+        tempUser.team = {"name": null, "color": null};
         setUser(tempUser);
 
         const tempBoxes = [...teamBoxes];
 
         existingUsers.forEach((user) => {
-            if (user.team != null)
+            if (user.team.name != null)
             {
-                const index = tempBoxes.findIndex(box => box.name === user.team)
+                const index = tempBoxes.findIndex(box => box.name === user.team.name)
 
                 if (!tempBoxes[index].users.find((item) => JSON.stringify(item).sid === JSON.stringify(user).sid))
                 tempBoxes[index].users.push(user);
@@ -85,7 +85,8 @@ function TeamDetails({members, setMembers})  {
 
         const addUser = () => {
             const tempUser = user;
-            tempUser.team = box.name;
+            tempUser.team.name = box.name;
+            tempUser.team.color = box.teamColor;
 
             box.users.push(tempUser);
 
@@ -94,7 +95,7 @@ function TeamDetails({members, setMembers})  {
 
         // remove team from old color
         console.log('User before Remove: ', user)
-        if (user.team != null)
+        if (user.team.name != null)
             removeUser(tempBoxes, user)
 
         // base case: add user to box users

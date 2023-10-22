@@ -3,7 +3,7 @@ import axios from "axios";
 
 import useFetch from "../../../hooks/useFetch";
 
-import { allChallenges, bingoCards, bingoSetChallenges, numCategoryChallenges, numChallenges, numSetChallenges } from "../../../service/links";
+import { allChallenges, bingoCards, bingoSetChallenges, numCategoryChallenges, numChallenges, numSetChallenges } from "../../../services/links";
 import CreateBoard from "./card";
 
 import { ChallengesContext } from "../../../hooks/context";

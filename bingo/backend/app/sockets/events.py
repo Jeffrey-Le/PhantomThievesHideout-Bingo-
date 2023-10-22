@@ -3,8 +3,7 @@ import random
 from flask import request, redirect, session
 from flask_socketio import emit, join_room, leave_room, send, rooms
 
-from ..extensions import socketio
-
+from ..extensions import socketio, existingChallengesOne, existingChallengesTwo, currentBoardOne, currentBoardTwo
 from string import ascii_uppercase
 
 roomsCode = {}
@@ -34,14 +33,22 @@ def handleDisconenct():
     print('User Disconnected')
 
     if (len(users) > 0):
+        hostUser = next((user for user in users if user['adminLevel'] == 2))
+        hostSID = hostUser['sid']
+
         userToRemove = next((x for x in users if x['sid'] == request.sid), None)
         print(userToRemove)
         users.remove(userToRemove)
 
-        hostUser = next((user for user in users if user['adminLevel'] == 2))
-        hostSID = hostUser['sid']
-
         send({"name": f'{userToRemove["name"]}', "message": ' has disconnected from the room'},  to=roomsCode[hostSID])
+
+        if (userToRemove == hostUser):
+            print('removing host user')
+            currentBoardOne.clear()
+            currentBoardTwo.clear()
+            del roomsCode[roomsCode[hostSID]]
+
+        leave_room(roomsCode[hostSID])
 
         emit('updateMembers', users, to=roomsCode[hostSID], include_self=False)
         emit('userDisconnect', userToRemove, to=roomsCode[hostSID], include_self=False)
@@ -93,6 +100,7 @@ def handleUserConnection(user, sid, roomCode):
     send({"name": f'{user["name"]}', "message": ' has joined the room'},  to=roomCode, include_self=False)
     
     emit('userConnected', users, to=sid)
+    #emit('loadBoard', existingChallenges, to=sid)
 
 @socketio.on('updateExistingUsers')
 def handleUpdateExistingUsers(updatedUsers, roomCode):
@@ -101,16 +109,53 @@ def handleUpdateExistingUsers(updatedUsers, roomCode):
 
 
 @socketio.on('signalBoard')
-def handleBoardSignal():
-    print('signalBoard')
-    emit('signaledBoard')
+def handleBoardSignal(id):
+    print('Signaling Board')
+    emit('signaledBoard', id, to=request.sid)
+    #emit('signaledBoardOne', id, to=request.sid)
+    #emit('signaledBoardTwo', id, to=request.sid)
+
+@socketio.on('updateBoard')
+def handleBoardLoading(boardChallenges, roomCode, boardID):
+    print('helloLoadBoard')
+    #print('BoardBoxes: ', boardBoxes)
+    match boardID:
+        case 1:
+            print('one')
+            existingChallengesOne[:] = boardChallenges[:]
+        case 2:
+            print('two')
+            existingChallengesTwo[:] = boardChallenges[:]
+
+    emit('loadBoard', {"challenges": boardChallenges, "BoardID": boardID}, to=roomCode, include_self=False)
 
 @socketio.on('loadBoard')
-def handleBoardLoading(roomCode, boardBoxes):
-    print('helloLoadBoard')
-    print(f'boardBoxes: {boardBoxes}')
+def handleBoardLoad(boardID):
+    print(f'BoardID: {boardID}')
+    match boardID:
+        case 1:
+            print('board1 Load')
+            if (len(currentBoardOne) > 0):
+                emit('changeBoard', {"boardBoxes": currentBoardOne, "boardID": boardID}, to=request.sid)
+            else:
+                emit('signaledBoard', boardID, to=request.sid)
+        case 2:
+            print('board2 Load')
+            if (len(currentBoardTwo) > 0):
+                emit('changeBoard', {"boardBoxes": currentBoardTwo, "boardID": boardID}, to=request.sid)
+            else:
+                emit('signaledBoard', boardID, to=request.sid)
 
-    emit('loadBoard', boardBoxes, to=roomCode, include_self=False)
+@socketio.on('changeBoard')
+def handleBoardChange(boardBoxes, boardID, roomCode):
+    print(boardBoxes)
+    match boardID:
+        case 1:
+            currentBoardOne[:] = boardBoxes[:]
+        case 2:
+            currentBoardTwo[:] = boardBoxes[:]
+
+    emit('changeBoard', {"boardBoxes": boardBoxes, "boardID": boardID},to=roomCode, include_self=False)
 
 @socketio.on('changeTeam')
 def handleTeamChange(members, client, roomCode, teamBoxes):
@@ -121,10 +166,6 @@ def handleTeamChange(members, client, roomCode, teamBoxes):
         if user['sid'] == client['sid']:
             users[index] = client
 
-    '''
-    for i in range(len(members)):
-        users[i] = members[i]
-    '''
     print(f'Users After team Change: {users}')
 
     emit('changeTeam', teamBoxes, to=roomCode, include_self=False)
@@ -132,3 +173,7 @@ def handleTeamChange(members, client, roomCode, teamBoxes):
 @socketio.on('updateMembers')
 def handleMemberUpdate(members):
     users[:] = members[:]
+
+@socketio.on('updateNewChallenges')
+def handleChallengesUpdate(challenges, roomCode):
+    emit('newChallenges', challenges, to=roomCode, include_self=False)

@@ -117,7 +117,7 @@ function useFetch(url, options={}, oldData=[]) {
         }
     }, []);
 
-    const setFetch = async (newData, oldData=[], newUrl=url, options={method: 'POST', data: null}) => {
+    const setFetch = async (newData, oldData=[], newUrl=url, options={method: 'POST', data: null}, api=true) => {
         /*
         console.log('Data: ', data);
         console.log('OldData: ', oldData);
@@ -125,7 +125,9 @@ function useFetch(url, options={}, oldData=[]) {
         */
         setError(false);
         setLoading(true);
-        try {
+        if (api)
+        {
+            try {
             
             if (newData != null)
                 options.data = newData;
@@ -138,6 +140,13 @@ function useFetch(url, options={}, oldData=[]) {
             setLoading(false);
         } catch (err){
             setError(err);
+        }
+        }
+
+        if (!api)
+        {
+            setData(newData)
+            setLoading(false);
         }
     }
 

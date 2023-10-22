@@ -1,32 +1,16 @@
-import './App.css';
+import 'App.css';
 
 import { useEffect, useState, useRef } from 'react'
 
 import {BrowserRouter, Route, Routes} from 'react-router-dom'
 
-import socket from './service/socket';
+import socket from 'services/socket';
 
-import { User, HostUser } from './shared/user';
+import { User, HostUser } from 'shared/user';
 
-import { InfoContext } from './hooks/context';
+import { InfoContext } from 'hooks/context';
 
-import Home from './pages/home/components/home';
-import LockoutHome from './pages/lockoutHome/lockoutHome';
-import LockoutRoom from './pages/lockoutRoom/lockoutRoom';
-
-
-
-function Hi() {
-  let normUser = new User();
-  let hostUser = new HostUser();
-
-  console.log(normUser);
-  console.log(hostUser);
-
-  return (
-    <div>Hello Mom</div>
-  )
-}
+import {Home, LockoutHome, LockoutRoom} from "views/index"
 
 
 function App() {

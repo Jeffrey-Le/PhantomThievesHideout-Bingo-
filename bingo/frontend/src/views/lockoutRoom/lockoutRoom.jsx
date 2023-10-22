@@ -16,14 +16,15 @@ function LockoutRoom() {
 
     const [members, setMembers] = useState([]);
 
-    const [click, setClick] = useState(true);
+    const [clickOne, setClickOne] = useState(true);
+    const [clickTwo, setClickTwo] = useState(true);
 
      // Refs
      const effectRan = useRef(false);
 
      const loadCode = () => {
          socket.emit('userConnect', user, user.sid, room);
-         socket.emit('signalBoard');
+         //socket.emit('loadBoard');
  
          socket.on('userConnected', (data) => {
              console.log('CONNECTING')
@@ -73,14 +74,46 @@ function LockoutRoom() {
         console.log(message);
     })
 
+    useEffect(() => {
+        console.log('clickone changed')
+    }, [clickOne])
+
+    useEffect(() => {
+        console.log('clickTwo changed')
+    }, [clickTwo])
+
     return (
         <>
             <LobbyDeatils members={members} setMembers={setMembers}/>
             <TeamDetails members={members} setMembers={setMembers}/>
-            <RefreshButton setClick={setClick}/>
-            {click ? <LoadExistingCard/> : <div> LOADING </div>}
+            <RefreshButton click={clickOne} setClick={setClickOne} id={1}/>
+            { clickOne ? <LoadExistingCard id={1}/> : <div> Loading Board </div>}
+            <RefreshButton click={clickTwo} setClick={setClickTwo} id={2}/>
+            { clickTwo ? <LoadExistingCard id={2}/> : <div> Loading Board </div>}
         </>
     )
 }
+
+/*
+                {
+                click.map((board) => {
+                    return (
+                        <>
+                        <div key={board.id}>
+                            <RefreshButton click={click} setClick={setClick} id={board.id}/>
+                            {board.value ? <LoadExistingCard clicked={board} id={board.id} /> : <div> Loading Board</div>}
+                        </div>
+                        </>
+                    )
+                })
+            }
+*/
+
+/*
+     <RefreshButton click={click} setClick={setClick} id={1}/>
+            { click[0].value ? <LoadExistingCard clicked={click[0]} id={1}/> : <div> Loading Board </div>}
+            <RefreshButton click={click} setClick={setClick} id={2}/>
+            { click[1].value ? <LoadExistingCard clicked={click[1]} id={2}/> : <div> Loading Board </div>}
+*/
 
 export default LockoutRoom;
