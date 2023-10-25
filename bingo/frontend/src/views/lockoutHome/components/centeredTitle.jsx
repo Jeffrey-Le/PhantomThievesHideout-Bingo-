@@ -8,8 +8,15 @@ import { BaseContainer, FlexContainer } from "../../../shared/styles/containerSt
 function CenteredTitle({title}) {
        // STYLES //
     const TitleContainer = styled(BaseContainer, {})({
-        backgroundColor: 'blue'
+        backgroundColor: 'blue',
+        width: '80vh',
+        height: '11vh',
+        display: 'flex',
+        'justify-content': 'center',
+        'clip-path': 'polygon(0% 0%, 100% 0%, 92% 100%, 8% 100%)'
     })
+
+    // clip-path: polygon(topLeft to Right, topLeft Down, topRight Left, TopRight Down, bottomRight Left, bottomRight Up, bottomLeft Right, bottomLeft Up)
 
     const Title = styled(Typography, {})({
         textAlign: 'center',
@@ -17,7 +24,9 @@ function CenteredTitle({title}) {
         color: 'black',
         justifySelf: 'start',
         alignSelf: 'normal',
-        fontSize: '5vh'
+        fontSize: '6vh',
+        fontFamily: 'Rodfellows-wacky',
+        letterSpacing: '3vh',
     })
 
     return (

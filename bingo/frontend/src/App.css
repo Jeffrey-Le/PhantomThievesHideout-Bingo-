@@ -6,3 +6,18 @@
   margin: 0;
   display: flex;
 }
+
+@font-face {
+  font-family: 'Rodfellows-wacky';
+  src: local('Rodfellows-wacky'), url(./assets/fonts/Rodfellows-wacky.ttf) format('truetype');
+}
+
+/*
+
+  NOTE
+  otf => format('opentype')
+  ttf => format('truetype')
+  woff => format('woff')
+
+*/
+

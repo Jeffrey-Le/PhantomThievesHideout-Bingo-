@@ -40,7 +40,7 @@ function CreateBoard({id}) {
             
             setBoxes(tempList);
 
-            socket.emit('loadBoard', id);
+            socket.emit('loadBoard', id, room);
         }
 
         return () => {
@@ -72,6 +72,7 @@ function CreateBoard({id}) {
             }
 
             console.log(itemToChange.teams.length)
+            
 
             if (itemToChange.value === false)
             {
@@ -82,7 +83,9 @@ function CreateBoard({id}) {
                 if (removeUser())
                     itemToChange.value = !itemToChange.value;
             if (itemToChange.value === true && !itemToChange.teams.find(item => JSON.stringify(item.name) === JSON.stringify(user.team.name)))
-                itemToChange.teams.push(user.team)
+                {
+                    itemToChange.teams.push(user.team)
+                }
             else if (itemToChange.teams.length > 1)
                 removeUser();
 
@@ -98,6 +101,7 @@ function CreateBoard({id}) {
     socket.on('signaledBoard', (boardID) => {
         if (boardID === id)
             socket.emit('updateBoard', challenges.data, room, id);
+
     })
    
     socket.on('loadBoard', (data) => {
@@ -122,10 +126,11 @@ function CreateBoard({id}) {
     socket.on('changeBoard', (data) => {
         if (data.boardID === id)
         {
+            console.log(data.boardBoxes)
             setBoxes(data.boardBoxes)
         }
     })
-
+    
     const boxSX = (id) => {
         const tempList = [...boxes];
         const boxItem = tempList.find(item => item.id === id);

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 
 import BaseButton from "../../shared/styles/buttonBase";
-import { Container, FormControl, FormLabel, Paper, TextField, Typography } from "@mui/material";
+import { Container, FormControl, FormLabel, Paper, TextField, ThemeProvider, Typography } from "@mui/material";
 import { BaseContainer, FlexContainer } from "../../shared/styles/containerStyles";
 import { Routes, Route, useNavigate } from "react-router";
 
@@ -11,6 +11,7 @@ import styled from "@emotion/styled";
 import CenteredTitle from "./components/centeredTitle";
 import JoinNavigator from "./components/joinNavigator";
 import { useInfoContext } from "../../hooks/context";
+import theme from "shared/styles/themes";
 
 
 function LockoutHome() {

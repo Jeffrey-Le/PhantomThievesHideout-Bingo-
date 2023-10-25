@@ -31,20 +31,6 @@ function TeamDetails({members, setMembers})  {
 
     // States
     const [teamBoxes, setTeamBoxes] = useState(teamBoxesArray);
-    const [clicked, setClick] = useState(false);
-
-    // Refs
-    const isConnected = useRef(false);
-    
-    /*
-    TODO 1) Load Existing Users From Backend Into Current Client Teams Boxes // check
-    TODO 2a) BASE CASE: On Click assign user team color from null // check
-    TODO 2b) BASE CASE: Update Other Users through backend and update their client team boxes // check
-    TODO 2c) On Click Remove user from old team color through frontend and assign new team color // check
-    TODO 2d) Update Other Users through backend and update their client team boxes
-    TODO 3a) Remvoe User from TeamBoxes on disconnect
-    TODO 3b) Update other users through backend and update their client team boxes
-    */
 
     socket.on('userConnected', (existingUsers) => {
         // Give User a null team
@@ -69,7 +55,6 @@ function TeamDetails({members, setMembers})  {
     })
 
     const removeUser = (orginalBoxes, userToRemove) => {
-        console.log(userToRemove)
         orginalBoxes.forEach((box) => {
             if (box.users.find((item) => JSON.stringify(item.sid) === JSON.stringify(userToRemove.sid)))
             {
@@ -82,6 +67,7 @@ function TeamDetails({members, setMembers})  {
 
     const handleClick = (box) => {
         const tempBoxes = [...teamBoxes];
+        var oldTeam = null;
 
         const addUser = () => {
             const tempUser = user;
@@ -96,19 +82,23 @@ function TeamDetails({members, setMembers})  {
         // remove team from old color
         console.log('User before Remove: ', user)
         if (user.team.name != null)
+        {
+            oldTeam = user.team.name;
             removeUser(tempBoxes, user)
+        }
+            
 
         // base case: add user to box users
         addUser();
 
         setTeamBoxes(tempBoxes);
 
-        socket.emit('changeTeam', members, user, room, tempBoxes);
+        socket.emit('changeTeam', oldTeam, user, room, tempBoxes);
     }
    
-    socket.on('changeTeam', (newBoxes) => {
-        console.log(newBoxes)
-        setTeamBoxes(newBoxes)
+    socket.on('changeTeam', (data) => {
+        console.log(data.teamBoxes)
+        setTeamBoxes(data.teamBoxes)
     })
 
     socket.on('userDisconnect', (removedUser) => {

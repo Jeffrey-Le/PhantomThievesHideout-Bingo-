@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Paper, TextField, iconClasses } from "@mui/material";
+import { Paper, TextField, iconClasses, ThemeProvider, createTheme } from "@mui/material";
 
 
 import { FlexContainer } from "../../../shared/styles/containerStyles";
@@ -67,7 +67,7 @@ function JoinNavigator({user, room, setUser, setRoom, socket}) {
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'column',
-        marginTop: '40vh'
+        marginTop: '25vh'
     });
 
     const navigatorPaper = ({
@@ -77,7 +77,9 @@ function JoinNavigator({user, room, setUser, setRoom, socket}) {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        borderRadius: 10,
+        borderColor: 'primary.main'
     });
 
     const buttonContainer = ({
@@ -97,8 +99,8 @@ function JoinNavigator({user, room, setUser, setRoom, socket}) {
                     </FlexContainer>
                     
                 </Paper>
+            
             </FlexContainer>
-
             
         </>
     )
