@@ -2,7 +2,7 @@ import 'App.css';
 
 import { useEffect, useState, useRef } from 'react'
 
-import {BrowserRouter, Route, Routes, useBeforeUnload} from 'react-router-dom'
+import {BrowserRouter, HashRouter, Route, Routes, useBeforeUnload} from 'react-router-dom'
 
 import {useH} from 'react-router'
 

@@ -15,7 +15,7 @@ def create_app():
 
     load_dotenv('bingo/backend/.env')
 
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder="bingo/frontend/build", static_url_path='/')
     CORS(app)
 
     SQLpass = os.environ.get("SQLPASSWORD")

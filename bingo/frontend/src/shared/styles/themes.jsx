@@ -9,9 +9,6 @@ const p5rYellow = {"RGB": 'rgb(242, 232, 82)', "Hex": '#f2e852'};
 
 const theme = {
     palette: {
-        background: {
-            default: 'green'
-        },
         primary: {
             main: p5rRed.Hex,
             darkRed: p5rDarkRed.Hex

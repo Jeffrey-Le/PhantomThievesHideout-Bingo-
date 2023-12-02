@@ -7,6 +7,8 @@ import StartButton from "./components/startButton";
 import { useInfoContext } from "../../hooks/context";
 import RefreshButton from "./components/refreshButton";
 import LoadExistingCard from "./components/loadExistingCard";
+import { Container } from "@mui/material";
+import { FlexContainer } from "shared/styles/containerStyles";
 
 function LockoutRoom() {
     const info = useInfoContext();
@@ -86,10 +88,12 @@ function LockoutRoom() {
         <>
             <LobbyDeatils members={members} setMembers={setMembers}/>
             <TeamDetails members={members} setMembers={setMembers}/>
-            <RefreshButton click={clickOne} setClick={setClickOne} id={1}/>
-            { clickOne ? <LoadExistingCard id={1}/> : <div> Loading Board </div>}
-            <RefreshButton click={clickTwo} setClick={setClickTwo} id={2}/>
-            { clickTwo ? <LoadExistingCard id={2}/> : <div> Loading Board </div>}
+            <FlexContainer sx={{flexDirection: 'column'}}>
+                <RefreshButton click={clickOne} setClick={setClickOne} id={1}/>
+                { clickOne ? <LoadExistingCard id={1}/> : <div> Loading Board </div>}
+                <RefreshButton click={clickTwo} setClick={setClickTwo} id={2}/>
+                { clickTwo ? <LoadExistingCard id={2}/> : <div> Loading Board </div>}
+            </FlexContainer>
         </>
     )
 }

@@ -3,6 +3,7 @@ import {Grid, Container} from '@mui/material';
 import {BoxStyle, CardGrid} from './cardStyles'
 
 import { useChallengesContext, useInfoContext } from '../../../hooks/context';
+import HiddenLayer from './hiddenLayer';
 
 // Make a Functional Component Here
 function CreateBoard({id}) {
@@ -20,6 +21,7 @@ function CreateBoard({id}) {
 
     const [boxes, setBoxes] = useState(boxArray);
     const challenges = useChallengesContext();
+    const [hidden, setHidden] = useState(true);
 
     // REFS
     const effectRan = useRef(false);
@@ -176,6 +178,7 @@ function CreateBoard({id}) {
 
     return (
         <Container sx={{flex: '2 1 auto'}}>
+            {hidden ? <HiddenLayer setHidden={setHidden}/> :
             <Grid container>
                 {boxes.map((box) => {
                     return (
@@ -185,7 +188,7 @@ function CreateBoard({id}) {
                         </BoxStyle>
                     </CardGrid>)
                 })}
-            </Grid>
+            </Grid>}
         </Container>
     )
 }

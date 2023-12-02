@@ -4,7 +4,8 @@ import {Grid, Box} from '@mui/material'
 
 // CSS STYLES //
 const CardGrid = styled(Grid, {})({
-    border: "1px solid black",
+    border: "2px solid black",
+    borderRadius: 1,
     position: "relative",
     width: 120,
     "&::before": {
