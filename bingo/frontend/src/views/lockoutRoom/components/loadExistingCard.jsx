@@ -9,14 +9,35 @@ import { bingoCards, bingoSetChallenges, numRandomBingoCards, randomSingleChalle
 import { ChallengesContext } from "../../../hooks/context";
 import socket from "services/socket";
 
+import axios from 'axios';
+
 function LoadExistingCard({id}) {
     const [cards, setCards, updateCards, appendCards] = useFetch(numRandomBingoCards(1));
     const [challenges, setChallenges, updateChallenges, appendChallenges] = useFetch(randomSingleChallenge)
 
+const [data, setData] = useState(0);
+
     // Refs
     const challengesLoaded = useRef(false)
 
+useEffect(() => {
+	const fetchData = async () => {
+		const response = await axios.get(numRandomBingoCards(1));
+
+		const resData = await response.data;
+
+	setData(resData);
+
+		console.log(response);
+		console.log(resData);
+	}
+
+	fetchData();
+}, []);
+
     useEffect(() => {
+
+console.log("DATA: ", data);
 
         if (challengesLoaded.current === true)
         {
@@ -33,7 +54,7 @@ function LoadExistingCard({id}) {
             challengesLoaded.current = true
         }
 
-    }, [cards.data])
+    }, [data])
 
     if (challenges)
         console.log('End LoadExistingCard');

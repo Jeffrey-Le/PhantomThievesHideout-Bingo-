@@ -4,9 +4,6 @@ import { useEffect, useState, useRef } from 'react'
 
 import {BrowserRouter, HashRouter, Route, Routes, useBeforeUnload} from 'react-router-dom'
 
-import {useH} from 'react-router'
-
-
 import socket from 'services/socket';
 
 import { User, HostUser } from 'shared/user';
@@ -19,7 +16,8 @@ import { ThemeProvider, useTheme } from '@emotion/react';
 import { Container, CssBaseline, createTheme } from '@mui/material';
 import theme from 'shared/styles/themes';
 import useFetch from 'hooks/useFetch';
-
+import {bingoCards} from 'services/links';
+import axios from 'axios';
 
 function App() {
   const [user, setUser] = useState(new User());
@@ -28,18 +26,24 @@ function App() {
 
   const themeToUse = createTheme(theme);
 
-  // Refs
-  const effectRan = useRef(false);
 // user={user} room={room} setUser={setUser} setRoom={setRoom} socket={socket}
 
   useEffect(() => {
-    if (effectRan.useEffect === true)
       socket.connect();
 
-    return (() => {
-      effectRan.useEffect = true;
-    })
+	  const fetchData = async () => {
+		const response = await axios(bingoCards, {});
+		  const data = await response.data;
+
+		  console.log("Response: ", response);
+
+		  console.log("Response Data: ", data);
+	  }
+
+	  fetchData();
+
   }, [])
+
 
   socket.on('connected', () => {
     const tempUser = user;
@@ -102,12 +106,12 @@ const waveEffect = () => {
     
         <CssBaseline/>
         <InfoContext.Provider value={{user: [user, setUser], room: [room, setRoom], socket: socket}}>
-          <BrowserRouter>
+          <BrowserRouter forceRefresh={true}>
           <Routes>
-            <Route exact path='/' element={<Home socket={socket}/>}/>
-            <Route exact path='leaderboard'/>
-            <Route exact path='lockout' element={<LockoutHome />}/>
-            <Route exact path='lockout/room' element={<LockoutRoom />}/>
+            <Route path='/' element={<Home socket={socket}/>}/>
+            <Route path='/leaderboard'/>
+            <Route path='/lockout' element={<LockoutHome />}/>
+            <Route exact path='/lockout/room' element={<LockoutRoom />}/>
           </Routes>
           </BrowserRouter>
         </InfoContext.Provider>

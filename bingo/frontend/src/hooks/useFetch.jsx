@@ -87,13 +87,16 @@ function useFetch(url, options={}) {
 }
 */
 
-function useFetch(url, options={}, oldData=[]) {
+function useFetch(url, options={headers: {'Content-Type': 'application/json'}}, oldData=[]) {
     const [data, setData] = useState(oldData);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     // Refs
-    const getRan = useRef(false);
+
+console.log('In useFetch');
+	console.log('URL is: ', url);
+	console.log('Options are: ', options);
 
     useEffect(() => {
         setLoading(true);
@@ -107,14 +110,7 @@ function useFetch(url, options={}, oldData=[]) {
             }
         }
 
-        if (getRan.current === true)
-        {
-            fetchData();
-        }
-
-        return () => {
-            getRan.current = true;
-        }
+       fetchData();
     }, []);
 
     const setFetch = async (newData, oldData=[], newUrl=url, options={method: 'POST', data: null}, api=true) => {

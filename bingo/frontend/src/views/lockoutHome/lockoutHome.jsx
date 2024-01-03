@@ -22,7 +22,9 @@ function LockoutHome() {
 
     useEffect(() => {
         console.log(user);
+	    socket.connect();
     }, [])
+
 
    return (
     <>

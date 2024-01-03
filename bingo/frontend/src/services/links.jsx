@@ -1,33 +1,33 @@
 
 // Method: GET, POST
-export const bingoCards = `http://127.0.0.1:5000//card`;
+export const bingoCards = `http://54.145.245.65:8000/card`;
 
 // Method: GET, PUT, DELETE
-export const singleBingoCard =  (type, value) => {return `http://127.0.0.1:5000/card/${type}=${value}`};
+export const singleBingoCard =  (type, value) => {return `http://54.145.245.65:8000/card/${type}=${value}`};
 
 // Method: GET
-export const numRandomBingoCards = (amount) => {return `http://127.0.0.1:5000/card/random/${amount}`};
+export const numRandomBingoCards = (amount) => {return `http://54.145.245.65:8000/card/random/${amount}`};
 
 // Method: GET, POST
-export const allChallenges = `http://127.0.0.1:5000//challenge`;
+export const allChallenges = `http://54.145.245.65:8000/challenge`;
 
 // Method: GET, PUT, DELETE
-export const singleChallenge = (id) => {return `http://127.0.0.1:5000//challenge/${id}`};
+export const singleChallenge = (id) => {return `http://54.145.245.65:8000/challenge/${id}`};
 
 // Method: GET
-export const categoryChallenge = (category) => { return `http://127.0.0.1:5000//challenge/${category}`};
+export const categoryChallenge = (category) => { return `http://54.145.245.65:8000/challenge/${category}`};
 
 // Method: GET
-export const numCategoryChallenges = (amount, category) => {return `http://127.0.0.1:5000//challenge/random/${amount}/${category}`}
+export const numCategoryChallenges = (amount, category) => {return `http://54.145.245.65:8000/challenge/random/${amount}/${category}`}
 
 // Method: GET
-export const randomSingleChallenge = `http://127.0.0.1:5000//challenge/random`;
+export const randomSingleChallenge = `http://54.145.245.65:8000/challenge/random`;
 
 // Method: GET
-export const numChallenges = (amount) => {return `http://127.0.0.1:5000//challenge/random/${amount}`};
+export const numChallenges = (amount) => {return `http://54.145.245.65:8000/challenge/random/${amount}`};
 
 // Method: GET
-export const numSetChallenges = (amount) => {return `http://127.0.0.1:5000//challenge/set/amount=${amount}`}
+export const numSetChallenges = (amount) => {return `http://54.145.245.65:8000/challenge/set/amount=${amount}`}
 
 // Method: GET, PUT, DELETE
-export const bingoSetChallenges = (id) => {return `http://127.0.0.1:5000//challenge/set/id=${id}`};
+export const bingoSetChallenges = (id) => {return `http://54.145.245.65:8000/challenge/set/id=${id}`};

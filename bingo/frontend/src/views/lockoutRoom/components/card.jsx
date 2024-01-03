@@ -23,13 +23,9 @@ function CreateBoard({id}) {
     const challenges = useChallengesContext();
     const [hidden, setHidden] = useState(true);
 
-    // REFS
-    const effectRan = useRef(false);
 
     useEffect(() => {
 
-        if (effectRan.useEffect === true)
-        {
             const tempList = [...boxes];
 
             for (let i = 0; i < tempList.length; i++)
@@ -43,11 +39,7 @@ function CreateBoard({id}) {
             setBoxes(tempList);
 
             socket.emit('loadBoard', id, room);
-        }
 
-        return () => {
-            effectRan.useEffect = true
-        }
     }, []);
 
     const handleClick = (boxID) => {

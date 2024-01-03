@@ -16,6 +16,7 @@ function JoinNavigator({user, room, setUser, setRoom, socket}) {
         socket.connect()
     }, [])
 
+
     const navigate = useNavigate();
 
     const navigateRoom = () => {
@@ -27,9 +28,9 @@ function JoinNavigator({user, room, setUser, setRoom, socket}) {
         console.log(user);
     
         console.log('Joining Room');
-
+	
         setTimeout(() => {
-            navigate('/lockout/room', {replace: true})
+            navigate('/lockout/room');
         }, 1000)
         
     }

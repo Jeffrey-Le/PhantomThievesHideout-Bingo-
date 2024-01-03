@@ -21,9 +21,7 @@ function LockoutRoom() {
     const [clickOne, setClickOne] = useState(true);
     const [clickTwo, setClickTwo] = useState(true);
 
-     // Refs
-     const effectRan = useRef(false);
-
+/*
      const loadCode = () => {
          socket.emit('userConnect', user, user.sid, room);
          //socket.emit('loadBoard');
@@ -47,16 +45,32 @@ function LockoutRoom() {
          })
  
      }
-    
+    */
     useEffect(() => {
         socket.connect()
-        
-        if (effectRan.useEffect === true)
-            loadCode();
 
-        return (() => {
-            effectRan.useEffect = true;
-        })
+	const loadCode = () => {
+		socket.emit('userConnect', user, user.sid, room);
+
+		socket.on('userConnected', (data) => {
+			console.log('CONNECTING');
+			console.log('UserConnected: ', data);
+
+			if (!data.find((item) => JSON.stringify(item.sid) === JSON.stringify(user.sid)))
+			{
+				data.push(user);
+				setMembers(data);
+				socket.emit('updateExistingUsers', data, room)
+			}
+			else
+				setMembers(data);
+
+			console.log(data);
+		})
+	}
+
+        loadCode();
+
     }, []);
 
     socket.on('userDisconnect', (users) => {
